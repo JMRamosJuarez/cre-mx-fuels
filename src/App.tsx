@@ -1,40 +1,41 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import CoreComponentImpl from '@core/data/di/components/core_component_impl';
-import CoreModuleImpl from '@core/data/di/modules/core_module_impl';
-import CoreComponent from '@core/domain/di/components/core_component';
-import CoreModule from '@core/domain/di/modules/core_module';
-import { ScrollView, Text } from 'react-native';
-
-const module: CoreModule = new CoreModuleImpl();
-const component: CoreComponent = new CoreComponentImpl(module);
+import { useDimensions } from '@core/presentation/hooks';
+import MapView, { Marker, Region } from 'react-native-maps';
 
 const App: React.FC = () => {
-  const [data, updateData] = useState<string>('LOADING');
+  const coordinates = useMemo(
+    () => ({
+      longitude: -99.14121458306909,
+      latitude: 19.435185559866923,
+    }),
+    [],
+  );
 
-  const getGasStations = useCallback(async () => {
-    try {
-      const { getGasStationsUseCase } = component.gasStationsComponent;
-      const response = await getGasStationsUseCase.execute({
-        distance: 5000,
-        location: { lat: 24.7581614, lng: -107.4679059 },
-      });
-      const json = JSON.stringify(response, null, '\t');
-      updateData(json);
-    } catch (error) {
-      const json = JSON.stringify(error, null, '\t');
-      updateData(json);
-    }
-  }, []);
+  const {
+    screen: { width, height },
+  } = useDimensions();
 
-  useEffect(() => {
-    getGasStations();
-  }, [getGasStations]);
+  const calculateDeltas = useCallback(
+    (zoom: number) => {
+      const scale = zoom / 1000;
+      const aspectRatio = width / height;
+      const latitudeDelta = scale / aspectRatio;
+      const longitudeDelta = scale;
+      return { latitudeDelta, longitudeDelta };
+    },
+    [height, width],
+  );
+
+  const region = useMemo<Region>(() => {
+    const deltas = calculateDeltas(15.75);
+    return { ...deltas, ...coordinates };
+  }, [calculateDeltas, coordinates]);
 
   return (
-    <ScrollView style={{ flex: 1 }}>
-      <Text style={{ color: 'black', fontSize: 10 }}>{data}</Text>
-    </ScrollView>
+    <MapView style={{ flex: 1 }} initialRegion={region}>
+      <Marker coordinate={coordinates} title={'Palacio de Bellas Artes'} />
+    </MapView>
   );
 };
 

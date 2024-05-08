@@ -59,13 +59,19 @@ export default class GasStationsDbDatasourceImpl
         return this.mapper.mapMapDbModel(model);
       });
 
-      return entities.filter(item => {
-        const distance = this.calculateDistance(
-          request.location,
-          item.location,
-        );
-        return distance <= request.distance;
-      });
+      return entities
+        .map(item => {
+          const distance = this.calculateDistance(
+            request.location,
+            item.location,
+          );
+          return { distance, item };
+        })
+        .filter(({ distance }) => {
+          return distance <= request.distance;
+        })
+        .sort((a, b) => a.distance - b.distance)
+        .map(({ item }) => item);
     }
 
     const { rows } = await this.dbClient.executeSql({
