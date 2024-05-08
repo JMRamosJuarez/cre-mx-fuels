@@ -6,13 +6,42 @@ import GasStationsRepository from '@fuels/domain/repositories/gas_stations_repos
 export default class GasStationsRepositoryImpl
   implements GasStationsRepository
 {
-  constructor(private readonly dbDatasource: GasStationsDatasource) {}
+  constructor(
+    private readonly creDatasource: GasStationsDatasource,
+    private readonly dbDatasource: GasStationsDatasource,
+  ) {}
 
-  getGasStation(request: string): Promise<GasStation> {
+  async getGasStation(request: string): Promise<GasStation> {
+    const status = await this.dbDatasource.validateDatasource();
+    if (status === 'available') {
+      return this.dbDatasource.getGasStation(request);
+    }
+
+    const gasStations = await this.creDatasource.getGasStations();
+
+    const promises = gasStations.map(gs =>
+      this.dbDatasource.createGasStation(gs),
+    );
+
+    await Promise.all(promises);
+
     return this.dbDatasource.getGasStation(request);
   }
 
-  getGasStations(request?: GasStationsRequest): Promise<GasStation[]> {
+  async getGasStations(request?: GasStationsRequest): Promise<GasStation[]> {
+    const status = await this.dbDatasource.validateDatasource();
+    if (status === 'available') {
+      return this.dbDatasource.getGasStations(request);
+    }
+
+    const gasStations = await this.creDatasource.getGasStations();
+
+    const promises = gasStations.map(gs =>
+      this.dbDatasource.createGasStation(gs),
+    );
+
+    await Promise.all(promises);
+
     return this.dbDatasource.getGasStations(request);
   }
 }

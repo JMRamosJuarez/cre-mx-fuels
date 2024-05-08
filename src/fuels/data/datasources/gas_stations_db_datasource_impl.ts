@@ -20,6 +20,16 @@ export default class GasStationsDbDatasourceImpl
     >,
   ) {}
 
+  async validateDatasource(): Promise<'available' | 'not-available'> {
+    const { rows } = await this.dbClient.executeSql({
+      query: 'SELECT COUNT(*) FROM gas_stations',
+      params: [],
+    });
+    const item = rows.item(0);
+    const count = item['COUNT(*)'];
+    return count > 0 ? 'available' : 'not-available';
+  }
+
   async createGasStation(request: GasStation): Promise<GasStation> {
     await this.dbClient.executeSql({
       query:

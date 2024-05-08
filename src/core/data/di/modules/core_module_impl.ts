@@ -4,10 +4,8 @@ import AppDbClient from '@core/domain/data_access/app_db_client';
 import HttpClient from '@core/domain/data_access/http_client';
 import CoreModule from '@core/domain/di/modules/core_module';
 import GasStationsMapperImpl from '@core/domain/mappers/gas_stations_mapper_impl';
-import GasStationsFileModel from '@fuels/data/models/gas_stations_file_model';
 import GasStationsMapper from '@fuels/domain/mappers/gas_stations_mapper';
 import axios from 'axios';
-import { XMLParser } from 'fast-xml-parser';
 import { Config } from 'react-native-config';
 import {
   DatabaseParams,
@@ -57,37 +55,7 @@ export default class CoreModuleImpl implements CoreModule {
             lng REAL NOT NULL
           );`);
 
-          const gasStationsResult = await db.executeSql(
-            'SELECT COUNT(*) FROM gas_stations',
-          );
-
-          if (gasStationsResult.length > 0) {
-            const { rows } = gasStationsResult[0];
-            const item = rows.item(0);
-            const count = item['COUNT(*)'];
-            if (count === 0) {
-              //POPULATE THE gas_stations TABLE
-              const xml = await this.creHttClient.get<string>(
-                '/publicaciones/places',
-              );
-              const parser = new XMLParser();
-              const file: GasStationsFileModel = parser.parse(xml);
-              const models = file.places?.place || [];
-              const promises = models.map(m =>
-                db.executeSql(
-                  'INSERT OR REPLACE INTO gas_stations VALUES (?, ?, ?, ?, ?)',
-                  [
-                    m['@_place_id'],
-                    m.cre_id,
-                    m.name,
-                    m.location?.y,
-                    m.location?.x,
-                  ],
-                ),
-              );
-              await Promise.all(promises);
-            }
-          }
+          await db.executeSql('SELECT COUNT(*) FROM gas_stations');
 
           await db.executeSql(`
           CREATE TABLE IF NOT EXISTS prices (
@@ -100,7 +68,7 @@ export default class CoreModuleImpl implements CoreModule {
           );`);
 
           const pricesResult = await db.executeSql(
-            'SELECT COUNT(*) FROM gas_stations',
+            'SELECT COUNT(*) FROM prices',
           );
 
           if (pricesResult.length > 0) {

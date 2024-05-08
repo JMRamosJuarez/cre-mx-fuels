@@ -2,6 +2,7 @@ import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_dataso
 import GasStationsRepository from '@fuels/domain/repositories/gas_stations_repository';
 
 export default interface GasStationsModule {
+  readonly creDatasource: GasStationsDatasource;
   readonly dbDatasource: GasStationsDatasource;
   readonly repository: GasStationsRepository;
 }
