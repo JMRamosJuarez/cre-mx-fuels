@@ -8,6 +8,7 @@ import GasStationsFileModel from '@fuels/data/models/gas_stations_file_model';
 import GasStationsMapper from '@fuels/domain/mappers/gas_stations_mapper';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
+import { Config } from 'react-native-config';
 import {
   DatabaseParams,
   ResultSet,
@@ -25,7 +26,7 @@ export default class CoreModuleImpl implements CoreModule {
   get creHttClient(): HttpClient {
     if (!this._creHttpClient) {
       const axiosInstance = axios.create({
-        baseURL: 'https://publicacionexterna.azurewebsites.net',
+        baseURL: Config.CRE_BASE_URL,
         timeout: 60000 * 5,
       });
       this._creHttpClient = new HttpClientImpl(axiosInstance);
