@@ -5,7 +5,6 @@ import CoreModuleImpl from '@core/data/di/modules/core_module_impl';
 import CoreComponent from '@core/domain/di/components/core_component';
 import CoreModule from '@core/domain/di/modules/core_module';
 import Location from '@core/domain/entities/location';
-import { useDimensions } from '@core/presentation/hooks';
 import GasStation from '@fuels/domain/entities/gas_station';
 import { Text } from 'react-native';
 import MapView, { Callout, Marker, Region } from 'react-native-maps';
@@ -14,10 +13,6 @@ const module: CoreModule = new CoreModuleImpl();
 const component: CoreComponent = new CoreComponentImpl(module);
 
 const App: React.FC = () => {
-  const {
-    screen: { width, height },
-  } = useDimensions();
-
   const [data, updateData] = useState<GasStation[]>([]);
 
   const location = useMemo<Location>(
@@ -28,6 +23,26 @@ const App: React.FC = () => {
     [],
   );
 
+  const calculateDeltas = useCallback(
+    (meters: number) => {
+      const earthRadiusInMeters = 6378137; // Earth's radius is approximately 6371 kilometers
+      const degreesPerRadian = 180 / Math.PI;
+      const radiansPerDegree = Math.PI / 180;
+
+      // Calculate the distance in degrees of latitude
+      const deltaLat = (meters / earthRadiusInMeters) * degreesPerRadian;
+
+      // Calculate the distance in degrees of longitude
+      const deltaLon =
+        (meters /
+          (earthRadiusInMeters * Math.cos(location.lat * radiansPerDegree))) *
+        degreesPerRadian;
+
+      return { latitudeDelta: deltaLat, longitudeDelta: deltaLon };
+    },
+    [location.lat],
+  );
+
   const getStations = useCallback(async () => {
     try {
       const { getGasStationsUseCase } = component.gasStationsComponent;
@@ -35,25 +50,15 @@ const App: React.FC = () => {
         distance: 5000,
         location,
       });
+      console.log('STATIONS: ', stations.length);
       updateData(stations);
     } catch (error) {
       console.log('ERROR: ', JSON.stringify(error, null, '\t'));
     }
   }, [location]);
 
-  const calculateDeltas = useCallback(
-    (zoom: number) => {
-      const scale = zoom / 1000;
-      const aspectRatio = width / height;
-      const latitudeDelta = scale / aspectRatio;
-      const longitudeDelta = scale;
-      return { latitudeDelta, longitudeDelta };
-    },
-    [height, width],
-  );
-
   const region = useMemo<Region>(() => {
-    const deltas = calculateDeltas(2.5);
+    const deltas = calculateDeltas(5000);
     return {
       ...{ latitude: location.lat, longitude: location.lng },
       ...deltas,
@@ -75,18 +80,19 @@ const App: React.FC = () => {
       {data.map(station => {
         return (
           <Marker
-            key={station.id}
+            key={`${station.id}-${station.creId}`}
             coordinate={{
               latitude: station.location.lat,
               longitude: station.location.lng,
-            }}
-            onPress={() => {
-              console.log('PRICES: ', station.prices);
             }}>
             <Callout>
               <Text>{station.name}</Text>
+              <Text>{`Distance: ${station.distance / 1000} Km.`}</Text>
               {station.prices.map(price => {
-                return <Text>{`${price.type}: ${price.price}`}</Text>;
+                return (
+                  <Text
+                    key={price.type}>{`${price.type}: ${price.price}`}</Text>
+                );
               })}
             </Callout>
           </Marker>

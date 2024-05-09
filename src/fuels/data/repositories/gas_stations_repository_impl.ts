@@ -1,5 +1,6 @@
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
 import GasStation from '@fuels/domain/entities/gas_station';
+import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
 import GasStationsRepository from '@fuels/domain/repositories/gas_stations_repository';
 
@@ -11,14 +12,21 @@ export default class GasStationsRepositoryImpl
     private readonly creDatasource: GasStationsDatasource,
   ) {}
 
-  async getGasStation(request: string): Promise<GasStation> {
+  async getGasStation(request: GasStationRequest): Promise<GasStation> {
     const status = await this.dbDatasource.validateDatasource();
 
     if (status === 'available') {
       return this.dbDatasource.getGasStation(request);
     }
 
-    const gasStations = await this.creDatasource.getGasStations();
+    /**
+     * This method receives a dummy request, the implementation
+     * do not need params.
+     */
+    const gasStations = await this.creDatasource.getGasStations({
+      distance: 0,
+      location: request.location,
+    });
 
     const promises = gasStations.map(gs =>
       this.dbDatasource.createGasStation(gs),
@@ -36,7 +44,11 @@ export default class GasStationsRepositoryImpl
       return this.dbDatasource.getGasStations(request);
     }
 
-    const gasStations = await this.creDatasource.getGasStations();
+    /**
+     * This method receives a dummy request, the implementation
+     * do not need params.
+     */
+    const gasStations = await this.creDatasource.getGasStations(request);
 
     const promises = gasStations.map(gs =>
       this.dbDatasource.createGasStation(gs),
