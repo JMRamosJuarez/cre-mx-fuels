@@ -13,6 +13,7 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
         lat: model.lat || 0,
         lng: model.lng || 0,
       },
+      prices: [],
     };
   }
 
@@ -25,6 +26,7 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
         lat: model.location?.y || 0,
         lng: model.location?.x || 0,
       },
+      prices: [],
     };
   }
 }
