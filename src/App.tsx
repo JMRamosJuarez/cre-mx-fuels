@@ -4,7 +4,6 @@ import CoreComponentImpl from '@core/data/di/components/core_component_impl';
 import CoreModuleImpl from '@core/data/di/modules/core_module_impl';
 import CoreComponent from '@core/domain/di/components/core_component';
 import CoreModule from '@core/domain/di/modules/core_module';
-import { EARTH_RADIUS_IN_METERS } from '@core/domain/entities/earth';
 import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
 import { Text } from 'react-native';
@@ -25,30 +24,38 @@ const App: React.FC = () => {
   );
 
   const calculateDeltas = useCallback(
-    (meters: number) => {
-      const earthRadiusInMeters = EARTH_RADIUS_IN_METERS; // Earth's radius is approximately 6371 kilometers
-      const degreesPerRadian = 180 / Math.PI;
-      const radiansPerDegree = Math.PI / 180;
+    (radius: number) => {
+      if (data.length > 0) {
+        const latitudes = data.map(({ location: { lat } }) => lat);
+        const longitudes = data.map(({ location: { lng } }) => lng);
 
-      // Calculate the distance in degrees of latitude
-      const deltaLat = (meters / earthRadiusInMeters) * degreesPerRadian;
+        const minLat = Math.min(...latitudes);
+        const maxLat = Math.max(...latitudes);
+        const minLon = Math.min(...longitudes);
+        const maxLon = Math.max(...longitudes);
 
-      // Calculate the distance in degrees of longitude
-      const deltaLon =
-        (meters /
-          (earthRadiusInMeters * Math.cos(location.lat * radiansPerDegree))) *
-        degreesPerRadian;
+        const latitudeDelta = Math.abs(maxLat - minLat) * 1.2; // Adding some padding
+        const longitudeDelta = Math.abs(maxLon - minLon) * 1.2; // Adding some padding
+        return { latitudeDelta, longitudeDelta };
+      }
 
-      return { latitudeDelta: deltaLat, longitudeDelta: deltaLon };
+      const LATITUDE_DELTA_PER_METER = 1 / (111 * 1000); // Approximation: 1 degree of latitude is about 111 kilometers (111 * 1000 meters)
+      const LONGITUDE_DELTA_PER_METER =
+        1 / (111 * 1000 * Math.cos((location.lat * Math.PI) / 180)); // Approximation: 1 degree of longitude varies with latitude
+
+      const latitudeDelta = radius * 2 * LATITUDE_DELTA_PER_METER;
+      const longitudeDelta = radius * 2 * LONGITUDE_DELTA_PER_METER;
+
+      return { latitudeDelta, longitudeDelta };
     },
-    [location.lat],
+    [data, location.lat],
   );
 
   const getStations = useCallback(async () => {
     try {
       const { getGasStationsUseCase } = component.gasStationsComponent;
       const stations = await getGasStationsUseCase.execute({
-        distance: 5000,
+        distance: 2000,
         location,
       });
       console.log('STATIONS: ', stations.length);
@@ -59,7 +66,7 @@ const App: React.FC = () => {
   }, [location]);
 
   const region = useMemo<Region>(() => {
-    const deltas = calculateDeltas(5000);
+    const deltas = calculateDeltas(2000);
     return {
       ...{ latitude: location.lat, longitude: location.lng },
       ...deltas,
