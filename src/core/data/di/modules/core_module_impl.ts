@@ -3,7 +3,9 @@ import HttpClientImpl from '@core/data/data_access/http_client_impl';
 import AppDbClient from '@core/domain/data_access/app_db_client';
 import HttpClient from '@core/domain/data_access/http_client';
 import CoreModule from '@core/domain/di/modules/core_module';
-import GasStationsMapperImpl from '@core/domain/mappers/gas_stations_mapper_impl';
+import GasPricesMapperImpl from '@fuels/data/mappers/gas_prices_mapper_impl';
+import GasStationsMapperImpl from '@fuels/data/mappers/gas_stations_mapper_impl';
+import GasPricesMapper from '@fuels/domain/mappers/gas_prices_mapper';
 import GasStationsMapper from '@fuels/domain/mappers/gas_stations_mapper';
 import axios from 'axios';
 import { Config } from 'react-native-config';
@@ -19,13 +21,14 @@ enablePromise(true);
 export default class CoreModuleImpl implements CoreModule {
   private _creHttpClient?: HttpClient;
   private _gasStationsMapper?: GasStationsMapper;
+  private _gasPricesMapper?: GasPricesMapper;
   private _dbClient?: AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet>;
 
-  get creHttClient(): HttpClient {
+  get creHttpClient(): HttpClient {
     if (!this._creHttpClient) {
       const axiosInstance = axios.create({
         baseURL: Config.CRE_BASE_URL,
-        timeout: 60000 * 5,
+        timeout: 60000 * 10,
       });
       this._creHttpClient = new HttpClientImpl(axiosInstance);
     }
@@ -37,6 +40,13 @@ export default class CoreModuleImpl implements CoreModule {
       this._gasStationsMapper = new GasStationsMapperImpl();
     }
     return this._gasStationsMapper;
+  }
+
+  get gasPricesMapper(): GasPricesMapper {
+    if (!this._gasPricesMapper) {
+      this._gasPricesMapper = new GasPricesMapperImpl();
+    }
+    return this._gasPricesMapper;
   }
 
   get dbClient(): AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet> {
@@ -55,30 +65,13 @@ export default class CoreModuleImpl implements CoreModule {
             lng REAL NOT NULL
           );`);
 
-          await db.executeSql('SELECT COUNT(*) FROM gas_stations');
-
           await db.executeSql(`
           CREATE TABLE IF NOT EXISTS prices (
-            id INTEGER PRIMARY KEY,
             station_id TEXT,
-            regular REAL,
-            premium REAL,
-            diesel REAL,
-            FOREIGN KEY (station_id) REFERENCES gas_stations(id) ON DELETE CASCADE
+            type TEXT,
+            price REAL,
+            PRIMARY KEY (station_id, type)
           );`);
-
-          const pricesResult = await db.executeSql(
-            'SELECT COUNT(*) FROM prices',
-          );
-
-          if (pricesResult.length > 0) {
-            const { rows } = pricesResult[0];
-            const item = rows.item(0);
-            const count = item['COUNT(*)'];
-            if (count === 0) {
-              console.log('PRE-POPULATE GAS PRICES');
-            }
-          }
 
           return db;
         },

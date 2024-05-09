@@ -7,21 +7,11 @@ import GasStationsModule from '@fuels/domain/di/modules/gas_stations_module';
 import GasStationsRepository from '@fuels/domain/repositories/gas_stations_repository';
 
 export default class GasStationsModuleImpl implements GasStationsModule {
-  private _creDatasource?: GasStationsDatasource;
   private _dbDatasource?: GasStationsDatasource;
+  private _creDatasource?: GasStationsDatasource;
   private _repository?: GasStationsRepository;
 
   constructor(private readonly coreModule: CoreModule) {}
-
-  get creDatasource(): GasStationsDatasource {
-    if (!this._creDatasource) {
-      this._creDatasource = new GasStationsCreDatasourceImpl(
-        this.coreModule.gasStationsMapper,
-        this.coreModule.creHttClient,
-      );
-    }
-    return this._creDatasource;
-  }
 
   get dbDatasource(): GasStationsDatasource {
     if (!this._dbDatasource) {
@@ -33,11 +23,21 @@ export default class GasStationsModuleImpl implements GasStationsModule {
     return this._dbDatasource;
   }
 
+  get creDatasource(): GasStationsDatasource {
+    if (!this._creDatasource) {
+      this._creDatasource = new GasStationsCreDatasourceImpl(
+        this.coreModule.gasStationsMapper,
+        this.coreModule.creHttpClient,
+      );
+    }
+    return this._creDatasource;
+  }
+
   get repository(): GasStationsRepository {
     if (!this._repository) {
       this._repository = new GasStationsRepositoryImpl(
-        this.creDatasource,
         this.dbDatasource,
+        this.creDatasource,
       );
     }
     return this._repository;

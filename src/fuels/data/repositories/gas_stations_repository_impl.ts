@@ -7,12 +7,13 @@ export default class GasStationsRepositoryImpl
   implements GasStationsRepository
 {
   constructor(
-    private readonly creDatasource: GasStationsDatasource,
     private readonly dbDatasource: GasStationsDatasource,
+    private readonly creDatasource: GasStationsDatasource,
   ) {}
 
   async getGasStation(request: string): Promise<GasStation> {
     const status = await this.dbDatasource.validateDatasource();
+
     if (status === 'available') {
       return this.dbDatasource.getGasStation(request);
     }
@@ -30,6 +31,7 @@ export default class GasStationsRepositoryImpl
 
   async getGasStations(request?: GasStationsRequest): Promise<GasStation[]> {
     const status = await this.dbDatasource.validateDatasource();
+
     if (status === 'available') {
       return this.dbDatasource.getGasStations(request);
     }

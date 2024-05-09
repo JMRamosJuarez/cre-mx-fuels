@@ -13,7 +13,7 @@ export default class GasStationsCreDatasourceImpl
 
   constructor(
     private readonly mapper: GasStationsMapper,
-    private readonly creHttClient: HttpClient,
+    private readonly creHttpClient: HttpClient,
   ) {}
 
   validateDatasource(): Promise<'available' | 'not-available'> {
@@ -37,7 +37,7 @@ export default class GasStationsCreDatasourceImpl
   async getGasStations(
     _?: GasStationsRequest | undefined,
   ): Promise<GasStation[]> {
-    const xml = await this.creHttClient.get<string>('/publicaciones/places');
+    const xml = await this.creHttpClient.get<string>('/publicaciones/places');
     const file: GasStationsFileModel = this.xmlParser.parse(xml);
     const models = file.places?.place || [];
     return models.map(m => this.mapper.mapMapXmlModel(m));
