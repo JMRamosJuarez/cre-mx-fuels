@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import CoreComponentImpl from '@core/data/di/components/core_component_impl';
 import CoreModuleImpl from '@core/data/di/modules/core_module_impl';
@@ -8,12 +14,14 @@ import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
 import numbro from 'numbro';
 import { Text } from 'react-native';
-import MapView, { Callout, Marker, Region } from 'react-native-maps';
+import MapView, { Callout, Marker } from 'react-native-maps';
 
 const module: CoreModule = new CoreModuleImpl();
 const component: CoreComponent = new CoreComponentImpl(module);
 
 const App: React.FC = () => {
+  const mapRef = useRef<MapView>(null);
+
   const [data, updateData] = useState<GasStation[]>([]);
 
   const currentLocation = useMemo<Location>(
@@ -24,10 +32,16 @@ const App: React.FC = () => {
     [],
   );
 
-  const region = useMemo<Region>(() => {
-    if (data.length > 0) {
-      const latitudes = data.map(place => place.location.lat);
-      const longitudes = data.map(place => place.location.lng);
+  const getStations = useCallback(async () => {
+    try {
+      const { getGasStationsUseCase } = component.gasStationsComponent;
+      const stations = await getGasStationsUseCase.execute({
+        distance: 2000,
+        location: currentLocation,
+      });
+
+      const latitudes = stations.map(place => place.location.lat);
+      const longitudes = stations.map(place => place.location.lng);
 
       const minLat = Math.min(...latitudes, currentLocation.lat);
       const maxLat = Math.max(...latitudes, currentLocation.lat);
@@ -43,30 +57,11 @@ const App: React.FC = () => {
       const latitudeDelta = distanceLat * 1.2; // Adjust factor as needed
       const longitudeDelta = distanceLng * 1.2; // Adjust factor as needed
 
-      return {
-        latitude,
-        longitude,
-        latitudeDelta,
-        longitudeDelta,
-      };
-    }
+      mapRef.current?.animateToRegion(
+        { latitude, longitude, latitudeDelta, longitudeDelta },
+        750,
+      );
 
-    return {
-      latitude: currentLocation.lat,
-      longitude: currentLocation.lng,
-      latitudeDelta: 0,
-      longitudeDelta: 0,
-    };
-  }, [data, currentLocation.lat, currentLocation.lng]);
-
-  const getStations = useCallback(async () => {
-    try {
-      const { getGasStationsUseCase } = component.gasStationsComponent;
-      const stations = await getGasStationsUseCase.execute({
-        distance: 2000,
-        location: currentLocation,
-      });
-      console.log('STATIONS: ', stations.length);
       updateData(stations);
     } catch (error) {
       console.log('ERROR: ', JSON.stringify(error, null, '\t'));
@@ -78,7 +73,15 @@ const App: React.FC = () => {
   }, [getStations]);
 
   return (
-    <MapView style={{ flex: 1 }} region={region}>
+    <MapView
+      ref={mapRef}
+      style={{ flex: 1 }}
+      region={{
+        latitude: currentLocation.lat,
+        longitude: currentLocation.lng,
+        latitudeDelta: 0,
+        longitudeDelta: 0,
+      }}>
       <Marker
         key={'my-location'}
         title={'My location'}
