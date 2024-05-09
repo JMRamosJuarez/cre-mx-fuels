@@ -39,8 +39,8 @@ const App: React.FC = () => {
       const distanceLat = maxLat - minLat;
       const distanceLng = maxLng - minLng;
 
-      const latitudeDelta = distanceLat * 1; // Adjust factor as needed
-      const longitudeDelta = distanceLng * 1; // Adjust factor as needed
+      const latitudeDelta = distanceLat * 1.2; // Adjust factor as needed
+      const longitudeDelta = distanceLng * 1.2; // Adjust factor as needed
 
       return {
         latitude,
