@@ -29,7 +29,7 @@ export default class GasStationsRepositoryImpl
     return this.dbDatasource.getGasStation(request);
   }
 
-  async getGasStations(request?: GasStationsRequest): Promise<GasStation[]> {
+  async getGasStations(request: GasStationsRequest): Promise<GasStation[]> {
     const status = await this.dbDatasource.validateDatasource();
 
     if (status === 'available') {

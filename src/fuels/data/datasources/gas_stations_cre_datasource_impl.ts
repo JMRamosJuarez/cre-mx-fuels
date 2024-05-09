@@ -34,9 +34,7 @@ export default class GasStationsCreDatasourceImpl
     );
   }
 
-  async getGasStations(
-    _?: GasStationsRequest | undefined,
-  ): Promise<GasStation[]> {
+  async getGasStations(_?: GasStationsRequest): Promise<GasStation[]> {
     const xml = await this.creHttpClient.get<string>('/publicaciones/places');
     const file: GasStationsFileModel = this.xmlParser.parse(xml);
     const models = file.places?.place || [];

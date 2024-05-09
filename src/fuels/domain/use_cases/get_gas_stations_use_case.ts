@@ -4,11 +4,11 @@ import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
 import GasStationsRepository from '@fuels/domain/repositories/gas_stations_repository';
 
 export default class GetGasStationsUseCase
-  implements BaseUseCase<GasStationsRequest | undefined, GasStation[]>
+  implements BaseUseCase<GasStationsRequest, GasStation[]>
 {
   constructor(private readonly repository: GasStationsRepository) {}
 
-  execute(request: GasStationsRequest | undefined): Promise<GasStation[]> {
+  execute(request: GasStationsRequest): Promise<GasStation[]> {
     return this.repository.getGasStations(request);
   }
 }
