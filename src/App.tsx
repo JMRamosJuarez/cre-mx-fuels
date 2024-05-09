@@ -28,10 +28,10 @@ const App: React.FC = () => {
       const latitudes = data.map(place => place.location.lat);
       const longitudes = data.map(place => place.location.lng);
 
-      const minLat = Math.min(...latitudes);
-      const maxLat = Math.max(...latitudes);
-      const minLng = Math.min(...longitudes);
-      const maxLng = Math.max(...longitudes);
+      const minLat = Math.min(...latitudes, currentLocation.lat);
+      const maxLat = Math.max(...latitudes, currentLocation.lat);
+      const minLng = Math.min(...longitudes, currentLocation.lng);
+      const maxLng = Math.max(...longitudes, currentLocation.lng);
 
       const latitude = (minLat + maxLat) / 2;
       const longitude = (minLng + maxLng) / 2;
