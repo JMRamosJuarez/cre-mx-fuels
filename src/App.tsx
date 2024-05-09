@@ -15,7 +15,7 @@ const component: CoreComponent = new CoreComponentImpl(module);
 const App: React.FC = () => {
   const [data, updateData] = useState<GasStation[]>([]);
 
-  const location = useMemo<Location>(
+  const currentLocation = useMemo<Location>(
     () => ({
       lat: 19.435185559866923,
       lng: -99.14121458306909,
@@ -51,26 +51,26 @@ const App: React.FC = () => {
     }
 
     return {
-      latitude: location.lat,
-      longitude: location.lng,
+      latitude: currentLocation.lat,
+      longitude: currentLocation.lng,
       latitudeDelta: 0,
       longitudeDelta: 0,
     };
-  }, [data, location.lat, location.lng]);
+  }, [data, currentLocation.lat, currentLocation.lng]);
 
   const getStations = useCallback(async () => {
     try {
       const { getGasStationsUseCase } = component.gasStationsComponent;
       const stations = await getGasStationsUseCase.execute({
         distance: 2000,
-        location,
+        location: currentLocation,
       });
       console.log('STATIONS: ', stations.length);
       updateData(stations);
     } catch (error) {
       console.log('ERROR: ', JSON.stringify(error, null, '\t'));
     }
-  }, [location]);
+  }, [currentLocation]);
 
   useEffect(() => {
     getStations();
@@ -82,7 +82,10 @@ const App: React.FC = () => {
         key={'my-location'}
         title={'My location'}
         pinColor={'blue'}
-        coordinate={{ latitude: location.lat, longitude: location.lng }}
+        coordinate={{
+          latitude: currentLocation.lat,
+          longitude: currentLocation.lng,
+        }}
       />
       {data.map(station => {
         return (
