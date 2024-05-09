@@ -23,33 +23,40 @@ const App: React.FC = () => {
     [],
   );
 
-  const calculateDeltas = useCallback(
-    (radius: number) => {
-      if (data.length > 0) {
-        const latitudes = data.map(({ location: { lat } }) => lat);
-        const longitudes = data.map(({ location: { lng } }) => lng);
+  const region = useMemo<Region>(() => {
+    if (data.length > 0) {
+      const latitudes = data.map(place => place.location.lat);
+      const longitudes = data.map(place => place.location.lng);
 
-        const minLat = Math.min(...latitudes);
-        const maxLat = Math.max(...latitudes);
-        const minLon = Math.min(...longitudes);
-        const maxLon = Math.max(...longitudes);
+      const minLat = Math.min(...latitudes);
+      const maxLat = Math.max(...latitudes);
+      const minLng = Math.min(...longitudes);
+      const maxLng = Math.max(...longitudes);
 
-        const latitudeDelta = Math.abs(maxLat - minLat) * 1.2; // Adding some padding
-        const longitudeDelta = Math.abs(maxLon - minLon) * 1.2; // Adding some padding
-        return { latitudeDelta, longitudeDelta };
-      }
+      const latitude = (minLat + maxLat) / 2;
+      const longitude = (minLng + maxLng) / 2;
 
-      const LATITUDE_DELTA_PER_METER = 1 / (111 * 1000); // Approximation: 1 degree of latitude is about 111 kilometers (111 * 1000 meters)
-      const LONGITUDE_DELTA_PER_METER =
-        1 / (111 * 1000 * Math.cos((location.lat * Math.PI) / 180)); // Approximation: 1 degree of longitude varies with latitude
+      const distanceLat = maxLat - minLat;
+      const distanceLng = maxLng - minLng;
 
-      const latitudeDelta = radius * 2 * LATITUDE_DELTA_PER_METER;
-      const longitudeDelta = radius * 2 * LONGITUDE_DELTA_PER_METER;
+      const latitudeDelta = distanceLat * 1; // Adjust factor as needed
+      const longitudeDelta = distanceLng * 1; // Adjust factor as needed
 
-      return { latitudeDelta, longitudeDelta };
-    },
-    [data, location.lat],
-  );
+      return {
+        latitude,
+        longitude,
+        latitudeDelta,
+        longitudeDelta,
+      };
+    }
+
+    return {
+      latitude: location.lat,
+      longitude: location.lng,
+      latitudeDelta: 0,
+      longitudeDelta: 0,
+    };
+  }, [data, location.lat, location.lng]);
 
   const getStations = useCallback(async () => {
     try {
@@ -64,14 +71,6 @@ const App: React.FC = () => {
       console.log('ERROR: ', JSON.stringify(error, null, '\t'));
     }
   }, [location]);
-
-  const region = useMemo<Region>(() => {
-    const deltas = calculateDeltas(2000);
-    return {
-      ...{ latitude: location.lat, longitude: location.lng },
-      ...deltas,
-    };
-  }, [calculateDeltas, location]);
 
   useEffect(() => {
     getStations();

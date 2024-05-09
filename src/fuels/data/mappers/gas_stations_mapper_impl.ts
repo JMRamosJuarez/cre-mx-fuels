@@ -40,36 +40,22 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
     };
   }
 
-  private calculateDistance(a: Location, b: Location): number {
-    // Convert latitude and longitude from degrees to radians
-    const aLatRad: number = this.toRadians(a.lat);
-    const aLonRad: number = this.toRadians(a.lng);
+  private calculateDistance(locationA: Location, locationB: Location): number {
+    const phi1 = (locationA.lat * Math.PI) / 180; // convert degrees to radians
+    const phi2 = (locationB.lat * Math.PI) / 180;
+    const deltaPhi = ((locationB.lat - locationA.lat) * Math.PI) / 180;
+    const deltaLambda = ((locationB.lng - locationA.lng) * Math.PI) / 180;
 
-    const bLatRad: number = this.toRadians(b.lat);
-    const bLonRad: number = this.toRadians(b.lng);
+    const a =
+      this.hav(deltaPhi) +
+      Math.cos(phi1) * Math.cos(phi2) * this.hav(deltaLambda);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    // Difference in latitude and longitude
-    const deltaLat: number = bLatRad - aLatRad;
-    const deltaLon: number = bLonRad - aLonRad;
-
-    // Haversine formula
-    const haversine: number =
-      Math.sin(deltaLat / 2) ** 2 +
-      Math.cos(aLatRad) * Math.cos(bLatRad) * Math.sin(deltaLon / 2) ** 2;
-
-    const c: number =
-      2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
-
-    const radius: number = EARTH_RADIUS_IN_METERS / 1000; // Radius of the Earth in kilometers
-    const distanceKm: number = radius * c;
-
-    // Convert distance to meters
-    const distanceM: number = distanceKm * 1000;
-
-    return distanceM;
+    return EARTH_RADIUS_IN_METERS * c;
   }
 
-  private toRadians(degrees: number): number {
-    return (degrees * Math.PI) / 180;
+  private hav(theta: number): number {
+    const s = Math.sin(theta / 2);
+    return s * s;
   }
 }
