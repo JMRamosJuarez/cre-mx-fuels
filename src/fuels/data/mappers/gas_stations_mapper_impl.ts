@@ -1,3 +1,4 @@
+import { EARTH_RADIUS_IN_METERS } from '@core/domain/entities/earth';
 import Location from '@core/domain/entities/location';
 import GasStationDbModel from '@fuels/data/models/gas_station_db_model';
 import GasStationXmlModel from '@fuels/data/models/gas_station_xml_model';
@@ -59,7 +60,7 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
     const c: number =
       2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
 
-    const radius: number = 6371; // Radius of the Earth in kilometers
+    const radius: number = EARTH_RADIUS_IN_METERS / 1000; // Radius of the Earth in kilometers
     const distanceKm: number = radius * c;
 
     // Convert distance to meters

@@ -4,6 +4,7 @@ import CoreComponentImpl from '@core/data/di/components/core_component_impl';
 import CoreModuleImpl from '@core/data/di/modules/core_module_impl';
 import CoreComponent from '@core/domain/di/components/core_component';
 import CoreModule from '@core/domain/di/modules/core_module';
+import { EARTH_RADIUS_IN_METERS } from '@core/domain/entities/earth';
 import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
 import { Text } from 'react-native';
@@ -25,7 +26,7 @@ const App: React.FC = () => {
 
   const calculateDeltas = useCallback(
     (meters: number) => {
-      const earthRadiusInMeters = 6378137; // Earth's radius is approximately 6371 kilometers
+      const earthRadiusInMeters = EARTH_RADIUS_IN_METERS; // Earth's radius is approximately 6371 kilometers
       const degreesPerRadian = 180 / Math.PI;
       const radiansPerDegree = Math.PI / 180;
 
