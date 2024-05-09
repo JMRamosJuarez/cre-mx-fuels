@@ -32,44 +32,47 @@ const App: React.FC = () => {
     [],
   );
 
-  const getStations = useCallback(async () => {
-    try {
-      const { getGasStationsUseCase } = component.gasStationsComponent;
-      const stations = await getGasStationsUseCase.execute({
-        distance: 2000,
-        location: currentLocation,
-      });
+  const getStations = useCallback(
+    async ({ zoom }: { readonly zoom: number }) => {
+      try {
+        const { getGasStationsUseCase } = component.gasStationsComponent;
+        const stations = await getGasStationsUseCase.execute({
+          distance: 2000,
+          location: currentLocation,
+        });
 
-      const latitudes = stations.map(place => place.location.lat);
-      const longitudes = stations.map(place => place.location.lng);
+        const latitudes = stations.map(place => place.location.lat);
+        const longitudes = stations.map(place => place.location.lng);
 
-      const minLat = Math.min(...latitudes, currentLocation.lat);
-      const maxLat = Math.max(...latitudes, currentLocation.lat);
-      const minLng = Math.min(...longitudes, currentLocation.lng);
-      const maxLng = Math.max(...longitudes, currentLocation.lng);
+        const minLat = Math.min(...latitudes, currentLocation.lat);
+        const maxLat = Math.max(...latitudes, currentLocation.lat);
+        const minLng = Math.min(...longitudes, currentLocation.lng);
+        const maxLng = Math.max(...longitudes, currentLocation.lng);
 
-      const latitude = (minLat + maxLat) / 2;
-      const longitude = (minLng + maxLng) / 2;
+        const latitude = (minLat + maxLat) / 2;
+        const longitude = (minLng + maxLng) / 2;
 
-      const distanceLat = maxLat - minLat;
-      const distanceLng = maxLng - minLng;
+        const distanceLat = maxLat - minLat;
+        const distanceLng = maxLng - minLng;
 
-      const latitudeDelta = distanceLat * 1.2; // Adjust factor as needed
-      const longitudeDelta = distanceLng * 1.2; // Adjust factor as needed
+        const latitudeDelta = distanceLat * zoom; // Adjust factor as needed
+        const longitudeDelta = distanceLng * zoom; // Adjust factor as needed
 
-      mapRef.current?.animateToRegion(
-        { latitude, longitude, latitudeDelta, longitudeDelta },
-        750,
-      );
+        mapRef.current?.animateToRegion(
+          { latitude, longitude, latitudeDelta, longitudeDelta },
+          750,
+        );
 
-      updateData(stations);
-    } catch (error) {
-      console.log('ERROR: ', JSON.stringify(error, null, '\t'));
-    }
-  }, [currentLocation]);
+        updateData(stations);
+      } catch (error) {
+        console.log('ERROR: ', JSON.stringify(error, null, '\t'));
+      }
+    },
+    [currentLocation],
+  );
 
   useEffect(() => {
-    getStations();
+    getStations({ zoom: 1.2 });
   }, [getStations]);
 
   return (
