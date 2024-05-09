@@ -6,6 +6,7 @@ import CoreComponent from '@core/domain/di/components/core_component';
 import CoreModule from '@core/domain/di/modules/core_module';
 import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
+import numbro from 'numbro';
 import { Text } from 'react-native';
 import MapView, { Callout, Marker, Region } from 'react-native-maps';
 
@@ -97,7 +98,10 @@ const App: React.FC = () => {
             }}>
             <Callout>
               <Text>{station.name}</Text>
-              <Text>{`Distance: ${station.distance / 1000} Km.`}</Text>
+              <Text>{`Distance: ${numbro(station.distance / 1000).format({
+                mantissa: 2,
+                trimMantissa: false,
+              })} Km.`}</Text>
               {station.prices.map(price => {
                 return (
                   <Text
