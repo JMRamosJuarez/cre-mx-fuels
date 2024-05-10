@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@assets/*": ["./src/assets/*"],
       "@core/*": ["./src/core/*"],
       "@fuels/*": ["./src/fuels/*"]
     }
