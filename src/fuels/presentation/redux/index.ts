@@ -1,4 +1,4 @@
-import DownloadProcess from '@fuels/domain/entities/download_process';
+import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import { initialState } from '@fuels/presentation/redux/state';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
@@ -8,7 +8,7 @@ const slice = createSlice({
   reducers: {
     updateDownloadProcess: (
       state,
-      { payload }: PayloadAction<DownloadProcess>,
+      { payload }: PayloadAction<ExecutionProcess>,
     ) => {
       state.downloadProcess[payload.type] = payload.progress;
     },

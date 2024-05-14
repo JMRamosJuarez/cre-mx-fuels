@@ -1,5 +1,5 @@
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
-import DownloadProcess from '@fuels/domain/entities/download_process';
+import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
@@ -65,7 +65,7 @@ export default class GasStationsRepositoryImpl
     return this.dbDatasource.getGasStations(request);
   }
 
-  async downloadGasStations(): Promise<Observable<DownloadProcess>> {
+  async downloadGasStations(): Promise<Observable<ExecutionProcess>> {
     /**
      * This method receives a dummy request, the implementation
      * do not need params.
