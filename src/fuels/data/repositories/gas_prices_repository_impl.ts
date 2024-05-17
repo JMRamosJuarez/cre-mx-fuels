@@ -1,4 +1,5 @@
 import GasPricesDatasource from '@fuels/domain/datasources/gas_prices_datasource';
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasPrices from '@fuels/domain/entities/gas_prices';
 import GasPricesRepository from '@fuels/domain/repositories/gas_prices_repository';
@@ -10,7 +11,7 @@ export default class GasPricesRepositoryImpl implements GasPricesRepository {
     private readonly creDatasource: GasPricesDatasource,
   ) {}
 
-  validateDatasource(): Promise<'available' | 'not-available'> {
+  validateDatasource(): Promise<DatasourceStatus> {
     return this.dbDatasource.validateDatasource();
   }
 

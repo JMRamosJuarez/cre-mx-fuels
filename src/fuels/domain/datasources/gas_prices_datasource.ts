@@ -1,7 +1,8 @@
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasPrices from '@fuels/domain/entities/gas_prices';
 
 export default interface GasPricesDatasource {
-  validateDatasource(): Promise<'available' | 'not-available'>;
+  validateDatasource(): Promise<DatasourceStatus>;
 
   saveGasPrices(request: GasPrices): Promise<GasPrices>;
 

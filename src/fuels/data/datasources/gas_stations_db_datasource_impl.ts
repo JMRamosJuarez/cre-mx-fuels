@@ -2,6 +2,7 @@ import AppDbClient from '@core/domain/data_access/app_db_client';
 import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import GasStationDbModel from '@fuels/data/models/gas_station_db_model';
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
@@ -20,7 +21,7 @@ export default class GasStationsDbDatasourceImpl
     >,
   ) {}
 
-  async validateDatasource(): Promise<'available' | 'not-available'> {
+  async validateDatasource(): Promise<DatasourceStatus> {
     const { rows } = await this.dbClient.executeSql({
       query: 'SELECT COUNT(*) FROM gas_stations',
       params: [],

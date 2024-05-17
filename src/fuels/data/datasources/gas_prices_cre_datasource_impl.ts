@@ -1,6 +1,7 @@
 import HttpClient from '@core/domain/data_access/http_client';
 import GasPricesXmlModel from '@fuels/data/models/gas_prices_xml_model';
 import GasPricesDatasource from '@fuels/domain/datasources/gas_prices_datasource';
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasPrices from '@fuels/domain/entities/gas_prices';
 import GasPricesMapper from '@fuels/domain/mappers/gas_prices_mapper';
 import { XMLParser } from 'fast-xml-parser';
@@ -13,7 +14,7 @@ export default class GasPricesCreDatasourceImpl implements GasPricesDatasource {
     private readonly creHttpClient: HttpClient,
   ) {}
 
-  validateDatasource(): Promise<'available' | 'not-available'> {
+  validateDatasource(): Promise<DatasourceStatus> {
     throw new Error(
       'Method "validateDatasource" is not implemented in GasPricesCreDatasourceImpl.',
     );

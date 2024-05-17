@@ -1,6 +1,8 @@
 import AppDbClientImpl from '@core/data/data_access/app_db_client_impl';
+import AppGeoLocatorImpl from '@core/data/data_access/app_geolocator_impl';
 import HttpClientImpl from '@core/data/data_access/http_client_impl';
 import AppDbClient from '@core/domain/data_access/app_db_client';
+import AppGeoLocator from '@core/domain/data_access/app_geolocator';
 import HttpClient from '@core/domain/data_access/http_client';
 import CoreModule from '@core/domain/di/modules/core_module';
 import GasPricesMapperImpl from '@fuels/data/mappers/gas_prices_mapper_impl';
@@ -23,6 +25,8 @@ export default class CoreModuleImpl implements CoreModule {
   private _gasStationsMapper?: GasStationsMapper;
   private _gasPricesMapper?: GasPricesMapper;
   private _dbClient?: AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet>;
+
+  constructor(private _appGeolocator?: AppGeoLocator) {}
 
   get creHttpClient(): HttpClient {
     if (!this._creHttpClient) {
@@ -47,6 +51,13 @@ export default class CoreModuleImpl implements CoreModule {
       this._gasPricesMapper = new GasPricesMapperImpl();
     }
     return this._gasPricesMapper;
+  }
+
+  get appGeolocator(): AppGeoLocator {
+    if (!this._appGeolocator) {
+      this._appGeolocator = new AppGeoLocatorImpl();
+    }
+    return this._appGeolocator;
   }
 
   get dbClient(): AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet> {

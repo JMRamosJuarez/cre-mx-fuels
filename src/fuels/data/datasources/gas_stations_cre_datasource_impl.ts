@@ -1,6 +1,7 @@
 import HttpClient from '@core/domain/data_access/http_client';
 import GasStationsFileModel from '@fuels/data/models/gas_stations_file_model';
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
@@ -17,7 +18,7 @@ export default class GasStationsCreDatasourceImpl
     private readonly creHttpClient: HttpClient,
   ) {}
 
-  validateDatasource(): Promise<'available' | 'not-available'> {
+  validateDatasource(): Promise<DatasourceStatus> {
     throw new Error(
       'Method "validateDatasource" is not implemented in GasStationsCreDatasourceImpl.',
     );

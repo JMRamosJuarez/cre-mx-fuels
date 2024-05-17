@@ -1,5 +1,7 @@
+export type ExecutionProcessType = 'stations' | 'prices';
+
 type ExecutionProcess = {
-  readonly type: 'stations' | 'prices';
+  readonly type: ExecutionProcessType;
   readonly progress: number;
 };
 

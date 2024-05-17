@@ -1,4 +1,6 @@
+import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
@@ -14,7 +16,7 @@ export default class GasStationsRepositoryImpl
     private readonly creDatasource: GasStationsDatasource,
   ) {}
 
-  validateDatasource(): Promise<'available' | 'not-available'> {
+  validateDatasource(): Promise<DatasourceStatus> {
     return this.dbDatasource.validateDatasource();
   }
 
@@ -25,22 +27,7 @@ export default class GasStationsRepositoryImpl
       return this.dbDatasource.getGasStation(request);
     }
 
-    /**
-     * This method receives a dummy request, the implementation
-     * do not need params.
-     */
-    const gasStations = await this.creDatasource.getGasStations({
-      distance: 0,
-      location: request.location,
-    });
-
-    const promises = gasStations.map(gs =>
-      this.dbDatasource.createGasStation(gs),
-    );
-
-    await Promise.all(promises);
-
-    return this.dbDatasource.getGasStation(request);
+    throw new AppError(AppErrorType.DATASOURCE_NOT_AVAILABLE);
   }
 
   async getGasStations(request: GasStationsRequest): Promise<GasStation[]> {
@@ -50,19 +37,7 @@ export default class GasStationsRepositoryImpl
       return this.dbDatasource.getGasStations(request);
     }
 
-    /**
-     * This method receives a dummy request, the implementation
-     * do not need params.
-     */
-    const gasStations = await this.creDatasource.getGasStations(request);
-
-    const promises = gasStations.map(gs =>
-      this.dbDatasource.createGasStation(gs),
-    );
-
-    await Promise.all(promises);
-
-    return this.dbDatasource.getGasStations(request);
+    throw new AppError(AppErrorType.DATASOURCE_NOT_AVAILABLE);
   }
 
   async downloadGasStations(): Promise<Observable<ExecutionProcess>> {
@@ -72,7 +47,6 @@ export default class GasStationsRepositoryImpl
      */
     const gasStations = await this.creDatasource.getGasStations({
       distance: 0,
-      location: { lat: 0, lng: 0 },
     });
 
     return from(gasStations).pipe(

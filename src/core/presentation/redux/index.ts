@@ -1,3 +1,4 @@
+import AppGeoLocator from '@core/domain/data_access/app_geolocator';
 import CoreComponent from '@core/domain/di/components/core_component';
 import AppError from '@core/domain/entities/app_error';
 import { AppReduxStore } from '@core/presentation/redux/store';
@@ -10,6 +11,7 @@ import {
 } from 'react-redux';
 
 export interface AppExtra {
+  readonly geolocator: AppGeoLocator;
   readonly coreComponent: CoreComponent;
 }
 
