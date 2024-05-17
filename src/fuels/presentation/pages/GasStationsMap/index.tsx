@@ -1,15 +1,25 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import Location from '@core/domain/entities/location';
 import MapRegion from '@fuels/domain/entities/map_region';
 import { useGetMapRegionAction } from '@fuels/presentation/redux/actions';
 import numbro from 'numbro';
 import { Text } from 'react-native';
+import { Config } from 'react-native-config';
 import MapView, { Callout, Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
 
   const [mapRegion, updateMapRegion] = useState<MapRegion | undefined>();
+  const [route, updateRoute] = useState<
+    | {
+        readonly origin: Location;
+        readonly destination: Location;
+      }
+    | undefined
+  >();
 
   const getMapRegion = useGetMapRegionAction();
 
@@ -72,6 +82,12 @@ const GasStationsMap: React.FC = () => {
             coordinate={{
               latitude: station.location.lat,
               longitude: station.location.lng,
+            }}
+            onPress={() => {
+              updateRoute({
+                origin: mapRegion.location,
+                destination: station.location,
+              });
             }}>
             <Callout>
               <Text>{station.name}</Text>
@@ -93,6 +109,23 @@ const GasStationsMap: React.FC = () => {
           </Marker>
         );
       })}
+      {route && (
+        <MapViewDirections
+          apikey={Config.GOOGLE_MAPS_API_KEY || '-'}
+          origin={{ latitude: route.origin.lat, longitude: route.origin.lng }}
+          destination={{
+            latitude: route.destination.lat,
+            longitude: route.destination.lng,
+          }}
+          strokeWidth={3}
+          onReady={({ distance, duration }) => {
+            console.log(
+              'ROUTE PROPS: ',
+              JSON.stringify({ distance, duration }, null, '\t'),
+            );
+          }}
+        />
+      )}
     </MapView>
   );
 };
