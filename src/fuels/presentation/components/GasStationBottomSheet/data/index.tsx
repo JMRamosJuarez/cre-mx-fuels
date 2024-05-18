@@ -1,6 +1,7 @@
 import React from 'react';
 
 import GasStationRoute from '@fuels/domain/entities/gas_station_route';
+import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
 import { useGasStationData } from '@fuels/presentation/redux/selectors/station';
 import { useAppTheme } from '@theme/index';
@@ -24,7 +25,7 @@ const GasStationData: React.FC<{
         { backgroundColor: colors.primary['50'] },
       ]}>
       <Text>{station.name}</Text>
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={{ flex: 1 }}>{`Distance: ${numbro(distance).format({
           mantissa: 2,
           trimMantissa: false,
@@ -34,16 +35,17 @@ const GasStationData: React.FC<{
           trimMantissa: false,
         })} min.`}</Text>
       </View>
-      {station.prices.map(price => {
-        return (
-          <Text key={price.type}>
-            {`${price.type}: ${numbro(price.price).formatCurrency({
-              mantissa: 2,
-              trimMantissa: false,
-            })}`}
-          </Text>
-        );
-      })}
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        {station.prices.map(price => {
+          return (
+            <GasPriceItem
+              key={price.type}
+              style={{ flex: 1, marginHorizontal: 1 }}
+              price={price}
+            />
+          );
+        })}
+      </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TouchableOpacity
           activeOpacity={0.7}
