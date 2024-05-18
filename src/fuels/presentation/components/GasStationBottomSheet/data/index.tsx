@@ -8,6 +8,7 @@ import { useGasStationData } from '@fuels/presentation/redux/selectors/station';
 import { useAppTheme } from '@theme/index';
 import numbro from 'numbro';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Config } from 'react-native-config';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const GasStationData: React.FC<{
@@ -58,6 +59,23 @@ const GasStationData: React.FC<{
           );
         })}
       </View>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={{
+          backgroundColor: colors.primary['200'],
+        }}
+        onPress={() => {
+          Linking.openURL(Config.CRE_URL || '-');
+        }}>
+        <Text style={styles.about}>
+          {
+            'Information provided by the CRE (COMISIÓN REGULADORA DE ENERGÍA). To know more go to '
+          }
+          <Text style={[styles.aboutLink, { color: colors.red['500'] }]}>
+            {'datos.gob.mx'}
+          </Text>
+        </Text>
+      </TouchableOpacity>
       <View style={styles.buttons}>
         <TouchableOpacity
           activeOpacity={0.7}

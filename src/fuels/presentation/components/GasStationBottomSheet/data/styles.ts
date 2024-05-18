@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: { position: 'absolute', start: 0, end: 0, bottom: 0 },
+  container: {},
   title: {
     marginTop: 8,
     fontSize: 18,
@@ -22,6 +22,8 @@ export const styles = StyleSheet.create({
   },
   prices: { flexDirection: 'row', alignItems: 'center' },
   price: { flex: 1, marginHorizontal: 1 },
+  about: { marginHorizontal: 1, paddingHorizontal: 12, paddingVertical: 8 },
+  aboutLink: { textDecorationLine: 'underline' },
   buttons: {
     flexDirection: 'row',
     alignItems: 'center',

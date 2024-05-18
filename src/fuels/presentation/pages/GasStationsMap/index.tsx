@@ -3,13 +3,15 @@ import React, { useEffect, useRef } from 'react';
 import { useRegionMapper } from '@core/presentation/hooks';
 import GasStationBottomSheet from '@fuels/presentation/components/GasStationBottomSheet';
 import GasStationMapRoute from '@fuels/presentation/components/GasStationMapRoute';
+import { mapStyles } from '@fuels/presentation/pages/GasStationsMap/map_style';
 import {
   useGetMapRegionAction,
   useUpdateRouteDataAction,
 } from '@fuels/presentation/redux/actions';
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
-import { StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { colors } from '@theme/colors';
+import { Text } from 'react-native';
+import MapView, { Callout, Marker } from 'react-native-maps';
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
@@ -44,23 +46,29 @@ const GasStationsMap: React.FC = () => {
 
   return (
     <>
-      <MapView ref={mapRef} style={StyleSheet.absoluteFill}>
+      <MapView
+        ref={mapRef}
+        style={{ flex: 1 }}
+        customMapStyle={mapStyles.night}>
         {mapRegion && (
           <Marker
             key={'my-location'}
-            title={'My location'}
-            pinColor={'blue'}
+            pinColor={colors.blue['500']}
             coordinate={{
               latitude: mapRegion.location.latitude,
               longitude: mapRegion.location.longitude,
-            }}
-          />
+            }}>
+            <Callout>
+              <Text>{'My location'}</Text>
+            </Callout>
+          </Marker>
         )}
         {mapRegion?.stations?.map(station => {
           return (
             <Marker
               key={`${station.id}-${station.creId}`}
               title={station.name}
+              pinColor={colors.red['500']}
               coordinate={{
                 latitude: station.location.latitude,
                 longitude: station.location.longitude,
@@ -74,8 +82,11 @@ const GasStationsMap: React.FC = () => {
                     destination: station.location,
                   },
                 });
-              }}
-            />
+              }}>
+              <Callout>
+                <Text>{station.name}</Text>
+              </Callout>
+            </Marker>
           );
         })}
         <GasStationMapRoute />
@@ -83,11 +94,12 @@ const GasStationsMap: React.FC = () => {
       <GasStationBottomSheet
         displayRoute={({ station, origin, destination }) => {
           updateRouteData({
-            color: 'gray',
+            color: colors.green['300'],
             route: { station, origin, destination },
           });
 
           const region = regionMapper({
+            zoom: 1.5,
             latitudes: [origin.latitude, destination.latitude],
             longitudes: [origin.longitude, destination.longitude],
           });

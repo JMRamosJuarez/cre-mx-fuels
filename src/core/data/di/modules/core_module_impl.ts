@@ -31,7 +31,7 @@ export default class CoreModuleImpl implements CoreModule {
   get creHttpClient(): HttpClient {
     if (!this._creHttpClient) {
       const axiosInstance = axios.create({
-        baseURL: Config.CRE_BASE_URL,
+        baseURL: Config.CRE_DATA_BASE_URL,
         timeout: 60000 * 10,
       });
       this._creHttpClient = new HttpClientImpl(axiosInstance);
