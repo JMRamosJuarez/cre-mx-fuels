@@ -1,6 +1,6 @@
 import { createAppAsyncThunk } from '@core/presentation/redux/thunks';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
-import MapRegion from '@fuels/domain/entities/map_region';
+import GasStationsMapRegion from '@fuels/domain/entities/gas_stations_map_region';
 import {
   updateDatasourceStatus,
   updateDownloadProcess,
@@ -54,7 +54,10 @@ export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
   },
 );
 
-export const getMapRegionAsyncThunk = createAppAsyncThunk<number, MapRegion>(
+export const getMapRegionAsyncThunk = createAppAsyncThunk<
+  number,
+  GasStationsMapRegion
+>(
   '/get-map-region',
   async (
     distance,
@@ -72,6 +75,6 @@ export const getMapRegionAsyncThunk = createAppAsyncThunk<number, MapRegion>(
       distance,
       location,
     });
-    return { location, stations };
+    return { distance, location, stations };
   },
 );

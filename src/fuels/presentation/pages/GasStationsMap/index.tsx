@@ -22,7 +22,7 @@ const GasStationsMap: React.FC = () => {
 
   const mapRegion = useMapRegion();
 
-  const mapper = useRegionMapper();
+  const regionMapper = useRegionMapper();
 
   useEffect(() => {
     if (mapRegion) {
@@ -31,17 +31,14 @@ const GasStationsMap: React.FC = () => {
       const latitudes = stations.map(place => place.location.latitude);
       const longitudes = stations.map(place => place.location.longitude);
 
-      const { latitude, longitude, latitudeDelta, longitudeDelta } = mapper({
+      const region = regionMapper({
         latitudes: [...latitudes, location.latitude],
         longitudes: [...longitudes, location.longitude],
       });
 
-      mapRef.current?.animateToRegion(
-        { latitude, longitude, latitudeDelta, longitudeDelta },
-        750,
-      );
+      mapRef.current?.animateToRegion(region, 750);
     }
-  }, [mapRegion, mapper]);
+  }, [mapRegion, regionMapper]);
 
   const updateRouteData = useUpdateRouteDataAction();
 
@@ -90,17 +87,12 @@ const GasStationsMap: React.FC = () => {
             route: { station, origin, destination },
           });
 
-          const { latitude, longitude, latitudeDelta, longitudeDelta } = mapper(
-            {
-              latitudes: [origin.latitude, destination.latitude],
-              longitudes: [origin.longitude, destination.longitude],
-            },
-          );
+          const region = regionMapper({
+            latitudes: [origin.latitude, destination.latitude],
+            longitudes: [origin.longitude, destination.longitude],
+          });
 
-          mapRef.current?.animateToRegion(
-            { latitude, longitude, latitudeDelta, longitudeDelta },
-            750,
-          );
+          mapRef.current?.animateToRegion(region, 750);
         }}
       />
     </>
