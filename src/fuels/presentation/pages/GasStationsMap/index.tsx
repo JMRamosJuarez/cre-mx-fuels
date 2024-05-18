@@ -17,7 +17,7 @@ const GasStationsMap: React.FC = () => {
   const getRegion = useGetMapRegionAction();
 
   useEffect(() => {
-    getRegion(2000);
+    getRegion(3000);
   }, [getRegion]);
 
   const mapRegion = useMapRegion();

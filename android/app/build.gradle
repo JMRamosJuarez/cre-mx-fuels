@@ -58,6 +58,11 @@ project.ext.envConfigFiles = [
     productionEnterprise: ".env.dev",
 ]
 
+project.ext.vectoricons = [
+    iconFontNames: [ 'MaterialIcons.ttf' ] // Specify font files
+]
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**

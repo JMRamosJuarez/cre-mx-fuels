@@ -2,16 +2,18 @@ import React from 'react';
 
 import GasStationRoute from '@fuels/domain/entities/gas_station_route';
 import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
+import { styles } from '@fuels/presentation/components/GasStationBottomSheet/data/styles';
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
 import { useGasStationData } from '@fuels/presentation/redux/selectors/station';
 import { useAppTheme } from '@theme/index';
 import numbro from 'numbro';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const GasStationData: React.FC<{
   readonly displayRoute: (route: GasStationRoute) => void;
 }> = ({ displayRoute }) => {
-  const { boxShadow: shadow, colors } = useAppTheme();
+  const { boxShadow, colors } = useAppTheme();
 
   const region = useMapRegion();
 
@@ -20,36 +22,46 @@ const GasStationData: React.FC<{
   return (
     <View
       style={[
-        { position: 'absolute', start: 0, end: 0, bottom: 0 },
-        shadow,
+        styles.container,
+        boxShadow,
         { backgroundColor: colors.primary['50'] },
       ]}>
-      <Text>{station.name}</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ flex: 1 }}>{`Distance: ${numbro(distance).format({
-          mantissa: 2,
-          trimMantissa: false,
-        })} Km.`}</Text>
-        <Text style={{ flex: 1 }}>{`Duration: ${numbro(duration).format({
-          mantissa: 2,
-          trimMantissa: false,
-        })} min.`}</Text>
+      <Text
+        style={[
+          styles.title,
+          {
+            color: colors.primary['900'],
+          },
+        ]}>
+        {station.name}
+      </Text>
+      <View style={styles.header}>
+        <Text style={styles.subtitle}>
+          {'Distance: '}
+          <Text style={styles.subtitleData}>{`${numbro(distance).format({
+            mantissa: 2,
+            trimMantissa: false,
+          })} Km.`}</Text>
+        </Text>
+        <Text style={styles.subtitle}>
+          {'Travel duration: '}
+          <Text style={styles.subtitleData}>{`${numbro(duration).format({
+            mantissa: 2,
+            trimMantissa: false,
+          })} min.`}</Text>
+        </Text>
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={styles.prices}>
         {station.prices.map(price => {
           return (
-            <GasPriceItem
-              key={price.type}
-              style={{ flex: 1, marginHorizontal: 1 }}
-              price={price}
-            />
+            <GasPriceItem key={price.type} style={styles.price} price={price} />
           );
         })}
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={styles.buttons}>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{ flex: 1, padding: 12 }}
+          style={[styles.button, { backgroundColor: colors.blue['700'] }]}
           onPress={() => {
             if (region) {
               displayRoute({
@@ -59,18 +71,36 @@ const GasStationData: React.FC<{
               });
             }
           }}>
-          <Text style={{ textAlign: 'center' }}>{'Show route'}</Text>
+          <MaterialIcon
+            color={colors.primary['50']}
+            size={24}
+            name={'directions'}
+          />
+          <Text style={[styles.buttonLabel, { color: colors.primary['50'] }]}>
+            {'Show route'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={{ flex: 1, padding: 12 }}
+          style={[
+            styles.button,
+            styles.outlineButton,
+            { borderColor: colors.blue['700'] },
+          ]}
           onPress={() => {
             if (region) {
               const url = `https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=driving&origin=${region.location.latitude},${region.location.longitude}&destination=${station.location.latitude},${station.location.longitude}`;
               Linking.openURL(url);
             }
           }}>
-          <Text style={{ textAlign: 'center' }}>{'Go'}</Text>
+          <MaterialIcon
+            color={colors.blue['700']}
+            size={24}
+            name={'navigation'}
+          />
+          <Text style={[styles.buttonLabel, { color: colors.blue['700'] }]}>
+            {'Go'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
