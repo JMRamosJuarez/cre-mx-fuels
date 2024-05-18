@@ -1,8 +1,15 @@
 import { useCallback } from 'react';
 
 import { useAppDispatch } from '@core/presentation/redux';
+import { BaseState } from '@core/presentation/redux/state';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
-import { updateDatasourceStatus } from '@fuels/presentation/redux';
+import GasStationData from '@fuels/domain/entities/gas_station_data';
+import GasStationRouteData from '@fuels/domain/entities/gas_station_route_data';
+import {
+  updateDatasourceStatus,
+  updateGasStationData,
+  updateRouteData,
+} from '@fuels/presentation/redux';
 import {
   downloadDataAsyncThunk,
   getMapRegionAsyncThunk,
@@ -41,6 +48,26 @@ export const useGetMapRegionAction = () => {
     async (request: number) => {
       const response = await dispatch(getMapRegionAsyncThunk(request));
       return unwrapResult(response);
+    },
+    [dispatch],
+  );
+};
+
+export const useUpdateGasStationDataAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: BaseState<GasStationData>) => {
+      dispatch(updateGasStationData(request));
+    },
+    [dispatch],
+  );
+};
+
+export const useUpdateRouteDataAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: GasStationRouteData) => {
+      dispatch(updateRouteData(request));
     },
     [dispatch],
   );

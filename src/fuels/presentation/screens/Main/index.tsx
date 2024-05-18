@@ -2,7 +2,7 @@ import React from 'react';
 
 import DownloadProcess from '@fuels/presentation/pages/DownloadProcess';
 import GasStationsMap from '@fuels/presentation/pages/GasStationsMap';
-import { useDatasourceStatus } from '@fuels/presentation/redux/selectors';
+import { useDatasourceStatus } from '@fuels/presentation/redux/selectors/datasource';
 
 const MainScreen: React.FC = () => {
   const state = useDatasourceStatus();

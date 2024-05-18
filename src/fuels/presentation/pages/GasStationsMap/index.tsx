@@ -1,132 +1,109 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import Location from '@core/domain/entities/location';
-import MapRegion from '@fuels/domain/entities/map_region';
-import { useGetMapRegionAction } from '@fuels/presentation/redux/actions';
-import numbro from 'numbro';
-import { Text } from 'react-native';
-import { Config } from 'react-native-config';
-import MapView, { Callout, Marker } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import { useRegionMapper } from '@core/presentation/hooks';
+import GasStationBottomSheet from '@fuels/presentation/components/GasStationBottomSheet';
+import GasStationMapRoute from '@fuels/presentation/components/GasStationMapRoute';
+import {
+  useGetMapRegionAction,
+  useUpdateRouteDataAction,
+} from '@fuels/presentation/redux/actions';
+import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
+import { StyleSheet } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
 
-  const [mapRegion, updateMapRegion] = useState<MapRegion | undefined>();
-  const [route, updateRoute] = useState<
-    | {
-        readonly origin: Location;
-        readonly destination: Location;
-      }
-    | undefined
-  >();
-
-  const getMapRegion = useGetMapRegionAction();
-
-  const getStations = useCallback(
-    async ({ zoom }: { readonly zoom: number }) => {
-      try {
-        const { location, stations } = await getMapRegion(2000);
-
-        const latitudes = stations.map(place => place.location.lat);
-        const longitudes = stations.map(place => place.location.lng);
-
-        const minLat = Math.min(...latitudes, location.lat);
-        const maxLat = Math.max(...latitudes, location.lat);
-        const minLng = Math.min(...longitudes, location.lng);
-        const maxLng = Math.max(...longitudes, location.lng);
-
-        const latitude = (minLat + maxLat) / 2;
-        const longitude = (minLng + maxLng) / 2;
-
-        const distanceLat = maxLat - minLat;
-        const distanceLng = maxLng - minLng;
-
-        const latitudeDelta = distanceLat * zoom; // Adjust factor as needed
-        const longitudeDelta = distanceLng * zoom; // Adjust factor as needed
-
-        mapRef.current?.animateToRegion(
-          { latitude, longitude, latitudeDelta, longitudeDelta },
-          750,
-        );
-
-        updateMapRegion({ location, stations });
-      } catch (error) {
-        console.log('ERROR: ', JSON.stringify(error, null, '\t'));
-      }
-    },
-    [getMapRegion],
-  );
+  const getRegion = useGetMapRegionAction();
 
   useEffect(() => {
-    getStations({ zoom: 1.2 });
-  }, [getStations]);
+    getRegion(2000);
+  }, [getRegion]);
+
+  const mapRegion = useMapRegion();
+
+  const mapper = useRegionMapper();
+
+  useEffect(() => {
+    if (mapRegion) {
+      const { location, stations } = mapRegion;
+
+      const latitudes = stations.map(place => place.location.latitude);
+      const longitudes = stations.map(place => place.location.longitude);
+
+      const { latitude, longitude, latitudeDelta, longitudeDelta } = mapper({
+        latitudes: [...latitudes, location.latitude],
+        longitudes: [...longitudes, location.longitude],
+      });
+
+      mapRef.current?.animateToRegion(
+        { latitude, longitude, latitudeDelta, longitudeDelta },
+        750,
+      );
+    }
+  }, [mapRegion, mapper]);
+
+  const updateRouteData = useUpdateRouteDataAction();
 
   return (
-    <MapView ref={mapRef} style={{ flex: 1 }}>
-      {mapRegion && (
-        <Marker
-          key={'my-location'}
-          title={'My location'}
-          pinColor={'blue'}
-          coordinate={{
-            latitude: mapRegion.location.lat,
-            longitude: mapRegion.location.lng,
-          }}
-        />
-      )}
-      {mapRegion?.stations?.map(station => {
-        return (
+    <>
+      <MapView ref={mapRef} style={StyleSheet.absoluteFill}>
+        {mapRegion && (
           <Marker
-            key={`${station.id}-${station.creId}`}
+            key={'my-location'}
+            title={'My location'}
+            pinColor={'blue'}
             coordinate={{
-              latitude: station.location.lat,
-              longitude: station.location.lng,
+              latitude: mapRegion.location.latitude,
+              longitude: mapRegion.location.longitude,
             }}
-            onPress={() => {
-              updateRoute({
-                origin: mapRegion.location,
-                destination: station.location,
-              });
-            }}>
-            <Callout>
-              <Text>{station.name}</Text>
-              <Text>{`Distance: ${numbro(station.distance / 1000).format({
-                mantissa: 2,
-                trimMantissa: false,
-              })} Km.`}</Text>
-              {station.prices.map(price => {
-                return (
-                  <Text key={price.type}>{`${price.type}: ${numbro(
-                    price.price,
-                  ).formatCurrency({
-                    mantissa: 2,
-                    trimMantissa: false,
-                  })}`}</Text>
-                );
-              })}
-            </Callout>
-          </Marker>
-        );
-      })}
-      {route && (
-        <MapViewDirections
-          apikey={Config.GOOGLE_MAPS_API_KEY || '-'}
-          origin={{ latitude: route.origin.lat, longitude: route.origin.lng }}
-          destination={{
-            latitude: route.destination.lat,
-            longitude: route.destination.lng,
-          }}
-          strokeWidth={3}
-          onReady={({ distance, duration }) => {
-            console.log(
-              'ROUTE PROPS: ',
-              JSON.stringify({ distance, duration }, null, '\t'),
-            );
-          }}
-        />
-      )}
-    </MapView>
+          />
+        )}
+        {mapRegion?.stations?.map(station => {
+          return (
+            <Marker
+              key={`${station.id}-${station.creId}`}
+              title={station.name}
+              coordinate={{
+                latitude: station.location.latitude,
+                longitude: station.location.longitude,
+              }}
+              onPress={() => {
+                updateRouteData({
+                  color: 'transparent',
+                  route: {
+                    station,
+                    origin: mapRegion.location,
+                    destination: station.location,
+                  },
+                });
+              }}
+            />
+          );
+        })}
+        <GasStationMapRoute />
+      </MapView>
+      <GasStationBottomSheet
+        displayRoute={({ station, origin, destination }) => {
+          updateRouteData({
+            color: 'gray',
+            route: { station, origin, destination },
+          });
+
+          const { latitude, longitude, latitudeDelta, longitudeDelta } = mapper(
+            {
+              latitudes: [origin.latitude, destination.latitude],
+              longitudes: [origin.longitude, destination.longitude],
+            },
+          );
+
+          mapRef.current?.animateToRegion(
+            { latitude, longitude, latitudeDelta, longitudeDelta },
+            750,
+          );
+        }}
+      />
+    </>
   );
 };
 
