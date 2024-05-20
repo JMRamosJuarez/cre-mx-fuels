@@ -22,6 +22,6 @@ export default class GetGasStationsUseCase
       stations.push({ ...station, prices });
     }
 
-    return stations;
+    return stations.filter(station => station.prices.length > 0);
   }
 }

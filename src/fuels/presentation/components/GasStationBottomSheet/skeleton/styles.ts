@@ -2,25 +2,12 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {},
-  title: {
-    marginTop: 8,
-    fontSize: 18,
-    lineHeight: 24,
-    fontWeight: 'bold',
-    marginHorizontal: 12,
-  },
-  subtitle: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 18,
-    marginHorizontal: 12,
-  },
-  subtitleData: {
-    fontWeight: 'bold',
-  },
+  title: { marginTop: 11, marginBottom: 3, marginHorizontal: 12 },
+  subtitle: { marginHorizontal: 12, marginVertical: 2 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginVertical: 8,
   },
   prices: { flexDirection: 'row', alignItems: 'center' },
@@ -40,6 +27,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 48,
     margin: 12,
+    opacity: 0.5,
   },
   outlineButton: {
     borderWidth: 1,
