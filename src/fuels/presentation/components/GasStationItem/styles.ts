@@ -1,18 +1,38 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {},
-  title: { marginTop: 11, marginBottom: 3, marginHorizontal: 12 },
-  subtitle: { marginHorizontal: 12, marginVertical: 2 },
+  container: { marginHorizontal: 8 },
+  title: {
+    fontSize: 16,
+    lineHeight: 22,
+    marginHorizontal: 12,
+    marginVertical: 4,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginVertical: 8,
+    marginVertical: 4,
+  },
+  headerItem: { flex: 1, marginHorizontal: 12 },
+  itemTitle: {
+    textAlign: 'center',
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  itemSubtitle: {
+    textAlign: 'center',
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: 'bold',
   },
   prices: { flexDirection: 'row', alignItems: 'center' },
   price: { flex: 1, marginHorizontal: 1 },
-  about: { marginHorizontal: 1, paddingHorizontal: 12, paddingVertical: 8 },
+  about: {
+    fontSize: 12,
+    lineHeight: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
   aboutLink: { textDecorationLine: 'underline' },
   buttons: {
     flexDirection: 'row',
@@ -27,7 +47,6 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 48,
     margin: 12,
-    opacity: 0.5,
   },
   outlineButton: {
     borderWidth: 1,
@@ -35,6 +54,8 @@ export const styles = StyleSheet.create({
   buttonLabel: {
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 14,
+    lineHeight: 18,
     marginHorizontal: 8,
   },
 });

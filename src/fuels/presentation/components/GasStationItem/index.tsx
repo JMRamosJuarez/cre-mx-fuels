@@ -1,33 +1,43 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
+import { useDimensions } from '@core/presentation/hooks';
+import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRoute from '@fuels/domain/entities/gas_station_route';
 import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
-import { styles } from '@fuels/presentation/components/GasStationBottomSheet/data/styles';
+import { styles } from '@fuels/presentation/components/GasStationItem/styles';
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
-import { useGasStationData } from '@fuels/presentation/redux/selectors/station';
 import { useAppTheme } from '@theme/index';
-import numbro from 'numbro';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Config } from 'react-native-config';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
-const GasStationData: React.FC<{
+const GasStationItem: React.FC<{
+  readonly station: GasStation;
   readonly displayRoute: (route: GasStationRoute) => void;
-}> = ({ displayRoute }) => {
-  const { boxShadow, colors } = useAppTheme();
+}> = ({ station, displayRoute }) => {
+  const {
+    screen: { width },
+  } = useDimensions();
 
   const region = useMapRegion();
 
-  const { distance, duration, station } = useGasStationData();
+  const itemWidth = useMemo(() => width - 16 - 32, [width]);
+
+  const { boxShadow, colors } = useAppTheme();
 
   return (
     <View
       style={[
         styles.container,
         boxShadow,
+        { width: itemWidth },
         { backgroundColor: colors.primary['50'] },
-      ]}>
+      ]}
+      onLayout={({ nativeEvent: { layout } }) => {
+        console.log('SIZE: ', layout.height);
+      }}>
       <Text
+        numberOfLines={1}
         style={[
           styles.title,
           {
@@ -37,20 +47,14 @@ const GasStationData: React.FC<{
         {station.name}
       </Text>
       <View style={styles.header}>
-        <Text style={styles.subtitle}>
-          {'Distance: '}
-          <Text style={styles.subtitleData}>{`${numbro(distance).format({
-            mantissa: 2,
-            trimMantissa: false,
-          })} Km.`}</Text>
-        </Text>
-        <Text style={styles.subtitle}>
-          {'Travel duration: '}
-          <Text style={styles.subtitleData}>{`${numbro(duration).format({
-            mantissa: 2,
-            trimMantissa: false,
-          })} min.`}</Text>
-        </Text>
+        <View style={styles.headerItem}>
+          <Text style={styles.itemSubtitle}>{'--.-- Km.'}</Text>
+          <Text style={styles.itemTitle}>{'Distance'}</Text>
+        </View>
+        <View style={styles.headerItem}>
+          <Text style={styles.itemSubtitle}>{'--.-- min.'}</Text>
+          <Text style={styles.itemTitle}>{'Travel duration'}</Text>
+        </View>
       </View>
       <View style={styles.prices}>
         {station.prices.map(price => {
@@ -105,12 +109,7 @@ const GasStationData: React.FC<{
             styles.outlineButton,
             { borderColor: colors.blue['700'] },
           ]}
-          onPress={() => {
-            if (region) {
-              const url = `https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=driving&origin=${region.location.latitude},${region.location.longitude}&destination=${station.location.latitude},${station.location.longitude}`;
-              Linking.openURL(url);
-            }
-          }}>
+          onPress={() => {}}>
           <MaterialIcon
             color={colors.blue['700']}
             size={24}
@@ -125,4 +124,4 @@ const GasStationData: React.FC<{
   );
 };
 
-export default GasStationData;
+export default GasStationItem;
