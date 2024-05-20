@@ -8,23 +8,6 @@ export const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginVertical: 4,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4,
-  },
-  headerItem: { flex: 1, marginHorizontal: 12 },
-  itemTitle: {
-    textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 18,
-  },
-  itemSubtitle: {
-    textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 18,
-    fontWeight: 'bold',
-  },
   prices: { flexDirection: 'row', alignItems: 'center' },
   price: { flex: 1, marginHorizontal: 1 },
   about: {

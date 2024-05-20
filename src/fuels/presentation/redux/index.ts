@@ -2,8 +2,9 @@ import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import { BaseState } from '@core/presentation/redux/state';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
-import GasStationData from '@fuels/domain/entities/gas_station_data';
-import GasStationRouteData from '@fuels/domain/entities/gas_station_route_data';
+import GasStation from '@fuels/domain/entities/gas_station';
+import MapRoute from '@fuels/domain/entities/map_route';
+import RouteData from '@fuels/domain/entities/route_data';
 import { initialState } from '@fuels/presentation/redux/state';
 import {
   getMapRegionAsyncThunk,
@@ -27,17 +28,19 @@ const slice = createSlice({
     ) => {
       state.executionProcess[payload.type] = payload.progress;
     },
-    updateGasStationData: (
+    updateGasStationRouteData: (
       state,
-      { payload }: PayloadAction<BaseState<GasStationData>>,
+      {
+        payload: { station, data },
+      }: PayloadAction<{
+        readonly station: GasStation;
+        readonly data: BaseState<RouteData>;
+      }>,
     ) => {
-      state.station = payload;
+      state.routes[`${station.id}-${station.creId}`] = data;
     },
-    updateRouteData: (
-      state,
-      { payload }: PayloadAction<GasStationRouteData>,
-    ) => {
-      state.routeData = payload;
+    updateMapRoute: (state, { payload }: PayloadAction<MapRoute>) => {
+      state.mapRoute = payload;
     },
   },
   extraReducers: builder => {
@@ -74,8 +77,8 @@ const slice = createSlice({
 export const {
   updateDatasourceStatus,
   updateDownloadProcess,
-  updateGasStationData,
-  updateRouteData,
+  updateGasStationRouteData,
+  updateMapRoute,
 } = slice.actions;
 
 export const gasStationsReducer = slice.reducer;

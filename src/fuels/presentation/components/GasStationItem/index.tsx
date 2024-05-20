@@ -2,10 +2,9 @@ import React, { useMemo } from 'react';
 
 import { useDimensions } from '@core/presentation/hooks';
 import GasStation from '@fuels/domain/entities/gas_station';
-import GasStationRoute from '@fuels/domain/entities/gas_station_route';
 import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
 import { styles } from '@fuels/presentation/components/GasStationItem/styles';
-import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
+import GasStationRouteData from '@fuels/presentation/components/GasStationRouteData';
 import { useAppTheme } from '@theme/index';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Config } from 'react-native-config';
@@ -13,13 +12,11 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const GasStationItem: React.FC<{
   readonly station: GasStation;
-  readonly displayRoute: (route: GasStationRoute) => void;
+  readonly displayRoute: (station: GasStation) => void;
 }> = ({ station, displayRoute }) => {
   const {
     screen: { width },
   } = useDimensions();
-
-  const region = useMapRegion();
 
   const itemWidth = useMemo(() => width - 16 - 32, [width]);
 
@@ -32,10 +29,7 @@ const GasStationItem: React.FC<{
         boxShadow,
         { width: itemWidth },
         { backgroundColor: colors.primary['50'] },
-      ]}
-      onLayout={({ nativeEvent: { layout } }) => {
-        console.log('SIZE: ', layout.height);
-      }}>
+      ]}>
       <Text
         numberOfLines={1}
         style={[
@@ -46,16 +40,7 @@ const GasStationItem: React.FC<{
         ]}>
         {station.name}
       </Text>
-      <View style={styles.header}>
-        <View style={styles.headerItem}>
-          <Text style={styles.itemSubtitle}>{'--.-- Km.'}</Text>
-          <Text style={styles.itemTitle}>{'Distance'}</Text>
-        </View>
-        <View style={styles.headerItem}>
-          <Text style={styles.itemSubtitle}>{'--.-- min.'}</Text>
-          <Text style={styles.itemTitle}>{'Travel duration'}</Text>
-        </View>
-      </View>
+      <GasStationRouteData station={station} />
       <View style={styles.prices}>
         {station.prices.map(price => {
           return (
@@ -85,13 +70,7 @@ const GasStationItem: React.FC<{
           activeOpacity={0.7}
           style={[styles.button, { backgroundColor: colors.blue['700'] }]}
           onPress={() => {
-            if (region) {
-              displayRoute({
-                station,
-                origin: region.location,
-                destination: station.location,
-              });
-            }
+            displayRoute(station);
           }}>
           <MaterialIcon
             color={colors.primary['50']}

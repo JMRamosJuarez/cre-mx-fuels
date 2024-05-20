@@ -50,12 +50,12 @@ const Skeleton: React.FC<SkeletonProps> = ({ width, height, style }) => {
               y2={'0%'}>
               <Stop
                 offset={'100%'}
-                stopColor={colors.primary['600']}
+                stopColor={colors.primary['400']}
                 stopOpacity="0"
               />
               <Stop
                 offset={'0%'}
-                stopColor={colors.primary['600']}
+                stopColor={colors.primary['400']}
                 stopOpacity="1"
               />
             </LinearGradient>
@@ -78,17 +78,17 @@ const Skeleton: React.FC<SkeletonProps> = ({ width, height, style }) => {
               y2={'0%'}>
               <Stop
                 offset={'0%'}
-                stopColor={colors.primary['600']}
+                stopColor={colors.primary['400']}
                 stopOpacity="0.05"
               />
               <Stop
                 offset={'50%'}
-                stopColor={colors.primary['600']}
+                stopColor={colors.primary['400']}
                 stopOpacity="1"
               />
               <Stop
                 offset={'100%'}
-                stopColor={colors.primary['600']}
+                stopColor={colors.primary['400']}
                 stopOpacity="0.05"
               />
             </LinearGradient>

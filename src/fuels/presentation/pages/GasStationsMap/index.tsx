@@ -7,7 +7,7 @@ import { mapStyles } from '@fuels/presentation/pages/GasStationsMap/map_style';
 import { styles } from '@fuels/presentation/pages/GasStationsMap/styles';
 import {
   useGetMapRegionAction,
-  useUpdateRouteDataAction,
+  useUpdateMapRouteAction,
 } from '@fuels/presentation/redux/actions';
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
 import { colors } from '@theme/colors';
@@ -46,7 +46,7 @@ const GasStationsMap: React.FC = () => {
     }
   }, [mapRegion, safeArea.top]);
 
-  const updateRouteData = useUpdateRouteDataAction();
+  const updateMapRoute = useUpdateMapRouteAction();
 
   const {
     screen: { width },
@@ -63,8 +63,11 @@ const GasStationsMap: React.FC = () => {
         style={StyleSheet.absoluteFill}
         toolbarEnabled={false}
         customMapStyle={mapStyles.night}
-        onRegionChangeComplete={region => {
-          console.log('REGION: ', region);
+        initialRegion={{
+          latitude: 23.6345, // Latitude of the center of Mexico
+          longitude: -102.5528, // Longitude of the center of Mexico
+          latitudeDelta: 30.0, // Height of the region to show Mexico
+          longitudeDelta: 30.0, // Width of the region to show Mexico
         }}>
         {mapRegion && (
           <Marker
@@ -95,12 +98,11 @@ const GasStationsMap: React.FC = () => {
                   animated: true,
                   viewOffset: 16,
                 });
-                updateRouteData({
+                updateMapRoute({
                   color: 'transparent',
-                  route: {
+                  data: {
                     station,
                     origin: mapRegion.location,
-                    destination: station.location,
                   },
                 });
               }}>
@@ -126,21 +128,27 @@ const GasStationsMap: React.FC = () => {
             return (
               <GasStationItem
                 station={item}
-                displayRoute={({ station, origin, destination }) => {
-                  updateRouteData({
+                displayRoute={station => {
+                  updateMapRoute({
                     color: colors.green['300'],
-                    route: { station, origin, destination },
+                    data: {
+                      station,
+                      origin: mapRegion.location,
+                    },
                   });
 
-                  mapRef.current?.fitToCoordinates([origin, destination], {
-                    edgePadding: {
-                      top: safeArea.top + 64,
-                      left: 16,
-                      right: 16,
-                      bottom: 16 + 295 + 38,
+                  mapRef.current?.fitToCoordinates(
+                    [mapRegion.location, station.location],
+                    {
+                      edgePadding: {
+                        top: safeArea.top + 64,
+                        left: 16,
+                        right: 16,
+                        bottom: 16 + 295 + 38,
+                      },
+                      animated: true,
                     },
-                    animated: true,
-                  });
+                  );
                 }}
               />
             );
@@ -154,6 +162,14 @@ const GasStationsMap: React.FC = () => {
                 ...station.location,
                 latitudeDelta: 0.009,
                 longitudeDelta: 0.009,
+              });
+
+              updateMapRoute({
+                color: 'transparent',
+                data: {
+                  station,
+                  origin: mapRegion.location,
+                },
               });
             }
           }}
