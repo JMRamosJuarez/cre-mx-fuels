@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { useDimensions } from '@core/presentation/hooks';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
 import { styles } from '@fuels/presentation/components/GasStationItem/styles';
@@ -11,15 +10,10 @@ import { Config } from 'react-native-config';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const GasStationItem: React.FC<{
+  readonly width: number;
   readonly station: GasStation;
   readonly displayRoute: (station: GasStation) => void;
-}> = ({ station, displayRoute }) => {
-  const {
-    screen: { width },
-  } = useDimensions();
-
-  const itemWidth = useMemo(() => width - 16 - 32, [width]);
-
+}> = ({ width, station, displayRoute }) => {
   const { boxShadow, colors } = useAppTheme();
 
   return (
@@ -27,7 +21,7 @@ const GasStationItem: React.FC<{
       style={[
         styles.container,
         boxShadow,
-        { width: itemWidth },
+        { width },
         { backgroundColor: colors.primary['50'] },
       ]}>
       <Text

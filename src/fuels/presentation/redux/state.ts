@@ -5,6 +5,7 @@ import {
   WaitingState,
 } from '@core/presentation/redux/state';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
+import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationsMapRegion from '@fuels/domain/entities/gas_stations_map_region';
 import MapRoute from '@fuels/domain/entities/map_route';
 import RouteData from '@fuels/domain/entities/route_data';
@@ -25,6 +26,7 @@ export interface GasStationsState {
   datasource: DatasourceState;
   executionProcess: ExecutionProcessState;
   region: BaseState<GasStationsMapRegion>;
+  station?: GasStation;
   mapRoute: MapRoute;
   routes: GasStationRoutesState;
 }

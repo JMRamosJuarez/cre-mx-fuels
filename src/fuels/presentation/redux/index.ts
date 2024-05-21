@@ -42,6 +42,9 @@ const slice = createSlice({
     updateMapRoute: (state, { payload }: PayloadAction<MapRoute>) => {
       state.mapRoute = payload;
     },
+    selectGasStation: (state, { payload }: PayloadAction<GasStation>) => {
+      state.station = payload;
+    },
   },
   extraReducers: builder => {
     builder
@@ -70,6 +73,14 @@ const slice = createSlice({
       })
       .addCase(getMapRegionAsyncThunk.fulfilled, (state, { payload }) => {
         state.region = { type: 'success', data: payload };
+        if (payload.stations.length > 0) {
+          const station = payload.stations[0];
+          state.station = station;
+          state.mapRoute = {
+            color: 'transparent',
+            data: { origin: payload.location, destination: station.location },
+          };
+        }
       });
   },
 });
@@ -79,6 +90,7 @@ export const {
   updateDownloadProcess,
   updateGasStationRouteData,
   updateMapRoute,
+  selectGasStation,
 } = slice.actions;
 
 export const gasStationsReducer = slice.reducer;

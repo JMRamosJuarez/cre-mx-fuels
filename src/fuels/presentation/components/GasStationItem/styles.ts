@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: { marginHorizontal: 8 },
+  container: { borderRadius: 4, marginHorizontal: 8 },
   title: {
     fontSize: 16,
     lineHeight: 22,

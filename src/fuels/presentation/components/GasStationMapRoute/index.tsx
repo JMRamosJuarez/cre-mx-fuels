@@ -3,6 +3,7 @@ import React from 'react';
 import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import { useUpdateGasStationRouteDataAction } from '@fuels/presentation/redux/actions';
 import { useMapRoute } from '@fuels/presentation/redux/selectors/route';
+import { useSelectedStation } from '@fuels/presentation/redux/selectors/station';
 import { Config } from 'react-native-config';
 import MapViewDirections from 'react-native-maps-directions';
 
@@ -11,18 +12,20 @@ const GasStationMapRoute: React.FC = () => {
 
   const { color, data } = useMapRoute();
 
+  const station = useSelectedStation();
+
   return (
     <>
-      {data?.station && (
+      {data && station && (
         <MapViewDirections
           apikey={Config.GOOGLE_MAPS_API_KEY || '-'}
           origin={data.origin}
-          destination={data.station.location}
+          destination={data.destination}
           strokeColor={color}
           strokeWidth={3}
           onError={() => {
             updateGasStationData({
-              station: data.station,
+              station: station,
               data: {
                 type: 'error',
                 error: new AppError(AppErrorType.UNKNOWN_ERROR),
@@ -31,7 +34,7 @@ const GasStationMapRoute: React.FC = () => {
           }}
           onReady={({ distance, duration }) => {
             updateGasStationData({
-              station: data.station,
+              station: station,
               data: {
                 type: 'success',
                 data: { distance, duration },

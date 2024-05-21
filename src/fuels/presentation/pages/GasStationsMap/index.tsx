@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import { useDimensions } from '@core/presentation/hooks';
-import GasStationItem from '@fuels/presentation/components/GasStationItem';
 import GasStationMapRoute from '@fuels/presentation/components/GasStationMapRoute';
+import GasStationMark from '@fuels/presentation/components/GasStationMark';
+import GasStations from '@fuels/presentation/components/GasStations';
 import { mapStyles } from '@fuels/presentation/pages/GasStationsMap/map_style';
-import { styles } from '@fuels/presentation/pages/GasStationsMap/styles';
 import {
   useGetMapRegionAction,
+  useSelectGasStationAction,
   useUpdateMapRouteAction,
 } from '@fuels/presentation/redux/actions';
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
@@ -17,13 +17,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
+  const stations = useRef<FlatList>(null);
 
   const safeArea = useSafeAreaInsets();
 
   const getRegion = useGetMapRegionAction();
 
   useEffect(() => {
-    // getRegion(3000);
+    getRegion(3000);
   }, [getRegion]);
 
   const mapRegion = useMapRegion();
@@ -48,13 +49,7 @@ const GasStationsMap: React.FC = () => {
 
   const updateMapRoute = useUpdateMapRouteAction();
 
-  const {
-    screen: { width },
-  } = useDimensions();
-
-  const itemWidth = useMemo(() => width - 16 - 32, [width]);
-
-  const stationsRef = useRef<FlatList>(null);
+  const selectGasStation = useSelectGasStationAction();
 
   return (
     <>
@@ -82,99 +77,74 @@ const GasStationsMap: React.FC = () => {
             </Callout>
           </Marker>
         )}
-        {mapRegion?.stations?.map((station, index) => {
+        {mapRegion?.stations?.map((item, index) => {
           return (
-            <Marker
-              key={`${station.id}-${station.creId}`}
-              title={station.name}
-              pinColor={colors.red['500']}
-              coordinate={{
-                latitude: station.location.latitude,
-                longitude: station.location.longitude,
-              }}
-              onPress={() => {
-                stationsRef.current?.scrollToIndex({
-                  index,
-                  animated: true,
-                  viewOffset: 16,
-                });
+            <GasStationMark
+              key={`${item.id}-${item.creId}`}
+              station={item}
+              onPress={station => {
+                selectGasStation(station);
                 updateMapRoute({
                   color: 'transparent',
                   data: {
-                    station,
                     origin: mapRegion.location,
+                    destination: station.location,
                   },
                 });
-              }}>
-              <Callout>
-                <Text>{station.name}</Text>
-              </Callout>
-            </Marker>
+                stations.current?.scrollToIndex({
+                  index,
+                  animated: true,
+                });
+              }}
+            />
           );
         })}
         <GasStationMapRoute />
       </MapView>
-      {mapRegion?.stations && (
-        <FlatList
-          ref={stationsRef}
-          horizontal
-          pagingEnabled
-          snapToInterval={width - 32}
-          data={mapRegion.stations}
-          keyExtractor={station => `${station.id}-${station.creId}`}
-          style={styles.stations}
-          contentContainerStyle={styles.stationsContent}
-          renderItem={({ item }) => {
-            return (
-              <GasStationItem
-                station={item}
-                displayRoute={station => {
-                  updateMapRoute({
-                    color: colors.green['300'],
-                    data: {
-                      station,
-                      origin: mapRegion.location,
-                    },
-                  });
-
-                  mapRef.current?.fitToCoordinates(
-                    [mapRegion.location, station.location],
-                    {
-                      edgePadding: {
-                        top: safeArea.top + 64,
-                        left: 16,
-                        right: 16,
-                        bottom: 16 + 295 + 38,
-                      },
-                      animated: true,
-                    },
-                  );
-                }}
-              />
-            );
-          }}
-          onMomentumScrollEnd={async ({ nativeEvent: { contentOffset } }) => {
-            if (mapRegion?.stations) {
-              const index = Math.floor(contentOffset.x / itemWidth);
-              const station = mapRegion.stations[index];
-
-              mapRef.current?.animateToRegion({
-                ...station.location,
-                latitudeDelta: 0.009,
-                longitudeDelta: 0.009,
-              });
-
-              updateMapRoute({
-                color: 'transparent',
-                data: {
-                  station,
-                  origin: mapRegion.location,
+      <GasStations
+        ref={stations}
+        selectStation={station => {
+          if (mapRegion?.stations) {
+            selectGasStation(station);
+            updateMapRoute({
+              color: 'transparent',
+              data: {
+                origin: mapRegion.location,
+                destination: station.location,
+              },
+            });
+            mapRef.current?.animateToRegion({
+              ...station.location,
+              latitudeDelta: 0.009,
+              longitudeDelta: 0.009,
+            });
+          }
+        }}
+        displayRoute={station => {
+          if (mapRegion) {
+            selectGasStation(station);
+            updateMapRoute({
+              color: colors.green['300'],
+              data: {
+                origin: mapRegion.location,
+                destination: station.location,
+              },
+            });
+            mapRef.current?.fitToCoordinates(
+              [mapRegion.location, station.location],
+              {
+                edgePadding: {
+                  top: safeArea.top + 64,
+                  left: 16,
+                  right: 16,
+                  bottom: 16 + 295 + 38,
                 },
-              });
-            }
-          }}
-        />
-      )}
+                animated: true,
+              },
+            );
+          }
+        }}
+      />
     </>
   );
 };
