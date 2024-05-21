@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
-  const stations = useRef<FlatList>(null);
+  const stationsRef = useRef<FlatList>(null);
 
   const safeArea = useSafeAreaInsets();
 
@@ -91,7 +91,7 @@ const GasStationsMap: React.FC = () => {
                     destination: station.location,
                   },
                 });
-                stations.current?.scrollToIndex({
+                stationsRef.current?.scrollToIndex({
                   index,
                   animated: true,
                 });
@@ -102,7 +102,7 @@ const GasStationsMap: React.FC = () => {
         <GasStationMapRoute />
       </MapView>
       <GasStations
-        ref={stations}
+        ref={stationsRef}
         selectStation={station => {
           if (mapRegion?.stations) {
             selectGasStation(station);
