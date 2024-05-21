@@ -29,27 +29,35 @@ const GasStationsMap: React.FC = () => {
 
   const mapRegion = useMapRegion();
 
+  const updateMapRoute = useUpdateMapRouteAction();
+
+  const selectGasStation = useSelectGasStationAction();
+
   useEffect(() => {
     if (mapRegion) {
       const { location, stations } = mapRegion;
 
-      mapRef.current?.fitToCoordinates(
-        [location, ...stations.map(i => i.location)],
-        {
-          edgePadding: {
-            top: safeArea.top + 64,
-            left: 16,
-            right: 16,
-            bottom: 295 + 38,
-          },
+      const station = stations[0];
+
+      updateMapRoute({
+        color: colors.green['300'],
+        data: {
+          origin: location,
+          destination: station.location,
         },
-      );
+      });
+
+      mapRef.current?.fitToCoordinates([location, station.location], {
+        edgePadding: {
+          top: safeArea.top + 64,
+          left: 16,
+          right: 16,
+          bottom: 16 + 295 + 38,
+        },
+        animated: true,
+      });
     }
-  }, [mapRegion, safeArea.top]);
-
-  const updateMapRoute = useUpdateMapRouteAction();
-
-  const selectGasStation = useSelectGasStationAction();
+  }, [mapRegion, safeArea.top, updateMapRoute]);
 
   return (
     <>
