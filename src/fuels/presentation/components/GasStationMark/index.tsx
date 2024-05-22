@@ -6,12 +6,10 @@ import { useSelectedStation } from '@fuels/presentation/redux/selectors/station'
 import { useAppTheme } from '@theme/index';
 import numbro from 'numbro';
 import { Text, View } from 'react-native';
-import { Marker } from 'react-native-maps';
 
 const GasStationMark: React.FC<{
   readonly station: GasStation;
-  readonly onPress: (station: GasStation) => void;
-}> = ({ station, onPress }) => {
+}> = ({ station }) => {
   const { colors } = useAppTheme();
 
   const selected = useSelectedStation();
@@ -34,12 +32,7 @@ const GasStationMark: React.FC<{
   }, [selected?.id, station.id, dark, light]);
 
   return (
-    <Marker
-      coordinate={{
-        latitude: station.location.latitude,
-        longitude: station.location.longitude,
-      }}
-      onPress={() => onPress(station)}>
+    <>
       <View
         style={[
           styles.container,
@@ -65,7 +58,7 @@ const GasStationMark: React.FC<{
         </Text>
       </View>
       <View style={[styles.indicator, { borderTopColor: backgroundColor }]} />
-    </Marker>
+    </>
   );
 };
 

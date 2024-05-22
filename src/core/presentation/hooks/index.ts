@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { EARTH_RADIUS_IN_METERS } from '@core/domain/entities/earth';
+import EdgeCoordinates from '@core/domain/entities/edge_coordinates';
+import Location from '@core/domain/entities/location';
 import { Dimensions, ScaledSize } from 'react-native';
-import { Region } from 'react-native-maps';
 
 export const useDimensions = () => {
   const [dimensions, setDimensions] = useState({
@@ -20,33 +22,58 @@ export const useDimensions = () => {
   return dimensions;
 };
 
-export const useRegionMapper = () => {
-  return useCallback(
-    ({
-      zoom = 1.2,
-      latitudes,
-      longitudes,
-    }: {
-      readonly zoom?: number;
-      readonly latitudes: number[];
-      readonly longitudes: number[];
-    }): Region => {
-      const minLat = Math.min(...latitudes);
-      const maxLat = Math.max(...latitudes);
-      const minLng = Math.min(...longitudes);
-      const maxLng = Math.max(...longitudes);
+// Function to calculate latitude and longitude offsets
+const calculateOffsets = (
+  location: Location,
+  distance: number,
+): { readonly latitudeOffset: number; readonly longitudeOffset: number } => {
+  const radians = 180 / Math.PI;
+  const degress = Math.PI / 180;
 
-      const latitude = (minLat + maxLat) / 2;
-      const longitude = (minLng + maxLng) / 2;
+  const offset = distance / EARTH_RADIUS_IN_METERS;
 
-      const distanceLat = maxLat - minLat;
-      const distanceLng = maxLng - minLng;
+  const latitudeOffset = offset * radians;
 
-      const latitudeDelta = distanceLat * zoom; // Adjust factor as needed
-      const longitudeDelta = distanceLng * zoom; // Adjust factor as needed
+  const longitudeOffset =
+    latitudeOffset / Math.cos(degress * location.latitude);
 
-      return { latitude, longitude, latitudeDelta, longitudeDelta };
-    },
-    [],
+  return {
+    latitudeOffset,
+    longitudeOffset,
+  };
+};
+
+// Function to calculate north, south, east, and west coordinates
+export const calculateEdgeCoordinates = (
+  location: Location,
+  radius: number,
+): EdgeCoordinates => {
+  const { latitudeOffset, longitudeOffset } = calculateOffsets(
+    location,
+    radius,
   );
+
+  const { latitude, longitude } = location;
+
+  const north: Location = {
+    latitude: latitude + latitudeOffset,
+    longitude,
+  };
+
+  const south: Location = {
+    latitude: latitude - latitudeOffset,
+    longitude,
+  };
+
+  const east: Location = {
+    latitude,
+    longitude: longitude + longitudeOffset,
+  };
+
+  const west: Location = {
+    latitude,
+    longitude: longitude - longitudeOffset,
+  };
+
+  return { north, south, east, west };
 };

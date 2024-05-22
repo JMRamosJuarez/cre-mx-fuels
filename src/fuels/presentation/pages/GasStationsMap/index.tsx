@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 
+import { calculateEdgeCoordinates } from '@core/presentation/hooks';
 import GasStationMapRoute from '@fuels/presentation/components/GasStationMapRoute';
 import GasStationMark from '@fuels/presentation/components/GasStationMark';
 import GasStations from '@fuels/presentation/components/GasStations';
+import RegionSelector from '@fuels/presentation/components/RegionSelector';
 import { mapStyles } from '@fuels/presentation/pages/GasStationsMap/map_style';
+import { styles } from '@fuels/presentation/pages/GasStationsMap/styles';
 import {
   useGetMapRegionAction,
   useSelectGasStationAction,
@@ -12,11 +15,23 @@ import {
 import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
 import { colors } from '@theme/colors';
 import { FlatList, StyleSheet, Text } from 'react-native';
-import MapView, { Callout, Marker } from 'react-native-maps';
+import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const GOOGLE_MAPS_LOGO = 38;
+const GAS_STATION_ITEM_HEIGHT = 295;
+const REGION_SELECTOR_HEIGHT = 58;
+const ITEM_MARGIN = 8;
+const MAP_PADDING_BOTTOM =
+  GOOGLE_MAPS_LOGO +
+  GAS_STATION_ITEM_HEIGHT +
+  ITEM_MARGIN +
+  REGION_SELECTOR_HEIGHT +
+  ITEM_MARGIN;
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
+
   const stationsRef = useRef<FlatList>(null);
 
   const safeArea = useSafeAreaInsets();
@@ -35,29 +50,22 @@ const GasStationsMap: React.FC = () => {
 
   useEffect(() => {
     if (mapRegion) {
-      const { location, stations } = mapRegion;
-
-      const station = stations[0];
-
-      updateMapRoute({
-        color: colors.green['300'],
-        data: {
-          origin: location,
-          destination: station.location,
-        },
-      });
-
-      mapRef.current?.fitToCoordinates([location, station.location], {
+      const { location, distance } = mapRegion;
+      const { north, south, east, west } = calculateEdgeCoordinates(
+        location,
+        distance,
+      );
+      mapRef.current?.fitToCoordinates([north, south, east, west], {
+        animated: true,
         edgePadding: {
           top: safeArea.top + 64,
-          left: 16,
-          right: 16,
-          bottom: 16 + 295 + 38,
+          left: 32,
+          right: 32,
+          bottom: 16 + MAP_PADDING_BOTTOM,
         },
-        animated: true,
       });
     }
-  }, [mapRegion, safeArea.top, updateMapRoute]);
+  }, [mapRegion, safeArea.top]);
 
   return (
     <>
@@ -72,7 +80,7 @@ const GasStationsMap: React.FC = () => {
           latitudeDelta: 30.0, // Height of the region to show Mexico
           longitudeDelta: 30.0, // Width of the region to show Mexico
         }}>
-        {mapRegion && (
+        {mapRegion?.location && (
           <Marker
             key={'my-location'}
             pinColor={colors.blue['500']}
@@ -87,28 +95,52 @@ const GasStationsMap: React.FC = () => {
         )}
         {mapRegion?.stations?.map((item, index) => {
           return (
-            <GasStationMark
+            <Marker
               key={`${item.id}-${item.creId}`}
-              station={item}
-              onPress={station => {
-                selectGasStation(station);
+              identifier={`${item.id}-${item.creId}`}
+              coordinate={item.location}
+              onPress={() => {
+                selectGasStation(item);
                 updateMapRoute({
                   color: 'transparent',
                   data: {
                     origin: mapRegion.location,
-                    destination: station.location,
+                    destination: item.location,
                   },
                 });
                 stationsRef.current?.scrollToIndex({
                   index,
                   animated: true,
                 });
-              }}
-            />
+              }}>
+              <GasStationMark station={item} />
+            </Marker>
           );
         })}
+        {mapRegion?.location && (
+          <Circle
+            center={mapRegion.location}
+            radius={mapRegion.distance}
+            strokeWidth={1}
+            strokeColor={'#1a66ff'}
+            fillColor={'rgba(230,238,255,0.5)'}
+          />
+        )}
         <GasStationMapRoute />
       </MapView>
+      <RegionSelector
+        style={[
+          styles.regionSelector,
+          {
+            bottom: GOOGLE_MAPS_LOGO + GAS_STATION_ITEM_HEIGHT + ITEM_MARGIN,
+          },
+        ]}
+        start={0.3}
+        maxRadius={10000} // 10km of max radius
+        updateRegion={radius => {
+          getRegion(radius);
+        }}
+      />
       <GasStations
         ref={stationsRef}
         selectStation={station => {
@@ -143,9 +175,9 @@ const GasStationsMap: React.FC = () => {
               {
                 edgePadding: {
                   top: safeArea.top + 64,
-                  left: 16,
-                  right: 16,
-                  bottom: 16 + 295 + 38,
+                  left: 32,
+                  right: 32,
+                  bottom: 16 + MAP_PADDING_BOTTOM,
                 },
                 animated: true,
               },

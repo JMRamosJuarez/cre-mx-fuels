@@ -12,7 +12,7 @@ const GasStationsSkeleton: React.FC = () => {
 
   const ITEM_WIDTH = useMemo(() => width - 32 - 16, [width]);
 
-  const stations = useMemo(() => new Array(3).fill({}), []);
+  const stations = useMemo(() => new Array(2).fill({}), []);
 
   return (
     <FlatList

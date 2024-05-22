@@ -12,4 +12,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 38,
   },
+  regionSelector: {
+    position: 'absolute',
+    start: 0,
+    end: 0,
+  },
 });

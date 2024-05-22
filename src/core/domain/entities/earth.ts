@@ -1,1 +1,2 @@
 export const EARTH_RADIUS_IN_METERS = 6378137;
+export const EARTH_RADIUS_IN_KM = 6378137 / 1000;
