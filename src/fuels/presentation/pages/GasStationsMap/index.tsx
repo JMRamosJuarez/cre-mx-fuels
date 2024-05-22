@@ -1,6 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 
 import { calculateEdgeCoordinates } from '@core/presentation/hooks';
+import {
+  GAS_STATION_ITEM_HEIGHT,
+  GOOGLE_MAPS_LOGO_HEIGHT,
+  ITEM_MARGIN,
+  MAP_PADDING_BOTTOM,
+} from '@fuels/domain/entities';
 import GasStationMapRoute from '@fuels/presentation/components/GasStationMapRoute';
 import GasStationMark from '@fuels/presentation/components/GasStationMark';
 import GasStations from '@fuels/presentation/components/GasStations';
@@ -17,17 +23,6 @@ import { colors } from '@theme/colors';
 import { FlatList, StyleSheet, Text } from 'react-native';
 import MapView, { Callout, Circle, Marker } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const GOOGLE_MAPS_LOGO = 38;
-const GAS_STATION_ITEM_HEIGHT = 295;
-const REGION_SELECTOR_HEIGHT = 58;
-const ITEM_MARGIN = 8;
-const MAP_PADDING_BOTTOM =
-  GOOGLE_MAPS_LOGO +
-  GAS_STATION_ITEM_HEIGHT +
-  ITEM_MARGIN +
-  REGION_SELECTOR_HEIGHT +
-  ITEM_MARGIN;
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
@@ -132,11 +127,12 @@ const GasStationsMap: React.FC = () => {
         style={[
           styles.regionSelector,
           {
-            bottom: GOOGLE_MAPS_LOGO + GAS_STATION_ITEM_HEIGHT + ITEM_MARGIN,
+            bottom:
+              GOOGLE_MAPS_LOGO_HEIGHT + GAS_STATION_ITEM_HEIGHT + ITEM_MARGIN,
           },
         ]}
-        start={0.3}
-        maxRadius={10000} // 10km of max radius
+        start={0.3} // default area of 3km.
+        maxRadius={10000} // 10km of max radius.
         updateRegion={radius => {
           getRegion(radius);
         }}
