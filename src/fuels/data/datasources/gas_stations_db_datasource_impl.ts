@@ -39,8 +39,8 @@ export default class GasStationsDbDatasourceImpl
         request.id,
         request.creId,
         request.name,
-        request.location.lat,
-        request.location.lng,
+        request.location.latitude,
+        request.location.longitude,
       ],
     });
     return request;

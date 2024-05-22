@@ -11,8 +11,8 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
     model: GasStationDbModel,
   ): GasStation {
     const location: Location = {
-      lat: model.lat || 0,
-      lng: model.lng || 0,
+      latitude: model.lat || 0,
+      longitude: model.lng || 0,
     };
     const distance = this.calculateDistance(requestLocation, location);
     return {
@@ -27,8 +27,8 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
 
   mapMapXmlModel(model: GasStationXmlModel): GasStation {
     const location: Location = {
-      lat: model.location?.y || 0,
-      lng: model.location?.x || 0,
+      latitude: model.location?.y || 0,
+      longitude: model.location?.x || 0,
     };
     return {
       id: model['@_place_id'] || '-',
@@ -41,10 +41,12 @@ export default class GasStationsMapperImpl implements GasStationsMapper {
   }
 
   private calculateDistance(locationA: Location, locationB: Location): number {
-    const phi1 = (locationA.lat * Math.PI) / 180; // convert degrees to radians
-    const phi2 = (locationB.lat * Math.PI) / 180;
-    const deltaPhi = ((locationB.lat - locationA.lat) * Math.PI) / 180;
-    const deltaLambda = ((locationB.lng - locationA.lng) * Math.PI) / 180;
+    const phi1 = (locationA.latitude * Math.PI) / 180; // convert degrees to radians
+    const phi2 = (locationB.latitude * Math.PI) / 180;
+    const deltaPhi =
+      ((locationB.latitude - locationA.latitude) * Math.PI) / 180;
+    const deltaLambda =
+      ((locationB.longitude - locationA.longitude) * Math.PI) / 180;
 
     const a =
       this.hav(deltaPhi) +

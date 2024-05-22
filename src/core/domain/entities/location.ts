@@ -1,6 +1,6 @@
 type Location = {
-  readonly lat: number;
-  readonly lng: number;
+  readonly latitude: number;
+  readonly longitude: number;
 };
 
 export default Location;

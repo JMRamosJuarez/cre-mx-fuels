@@ -46,7 +46,7 @@ export default class GasPricesDbDatasourceImpl implements GasPricesDatasource {
 
   async getGasPricesByStationId(request: string): Promise<GasPrices> {
     const { rows } = await this.dbClient.executeSql({
-      query: 'SELECT * FROM prices WHERE station_id = ?',
+      query: 'SELECT * FROM prices WHERE station_id = ? ORDER BY price ASC',
       params: [request],
     });
     const prices = Array.from({ length: rows.length }).map((_, index) => {

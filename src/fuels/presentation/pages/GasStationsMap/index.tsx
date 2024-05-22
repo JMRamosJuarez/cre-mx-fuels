@@ -1,132 +1,191 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import Location from '@core/domain/entities/location';
-import MapRegion from '@fuels/domain/entities/map_region';
-import { useGetMapRegionAction } from '@fuels/presentation/redux/actions';
-import numbro from 'numbro';
-import { Text } from 'react-native';
-import { Config } from 'react-native-config';
-import MapView, { Callout, Marker } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import { calculateEdgeCoordinates } from '@core/presentation/hooks';
+import GasStationMapRoute from '@fuels/presentation/components/GasStationMapRoute';
+import GasStationMark from '@fuels/presentation/components/GasStationMark';
+import GasStations from '@fuels/presentation/components/GasStations';
+import RegionSelector from '@fuels/presentation/components/RegionSelector';
+import { mapStyles } from '@fuels/presentation/pages/GasStationsMap/map_style';
+import { styles } from '@fuels/presentation/pages/GasStationsMap/styles';
+import {
+  useGetMapRegionAction,
+  useSelectGasStationAction,
+  useUpdateMapRouteAction,
+} from '@fuels/presentation/redux/actions';
+import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
+import { colors } from '@theme/colors';
+import { FlatList, StyleSheet, Text } from 'react-native';
+import MapView, { Callout, Circle, Marker } from 'react-native-maps';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const GOOGLE_MAPS_LOGO = 38;
+const GAS_STATION_ITEM_HEIGHT = 295;
+const REGION_SELECTOR_HEIGHT = 58;
+const ITEM_MARGIN = 8;
+const MAP_PADDING_BOTTOM =
+  GOOGLE_MAPS_LOGO +
+  GAS_STATION_ITEM_HEIGHT +
+  ITEM_MARGIN +
+  REGION_SELECTOR_HEIGHT +
+  ITEM_MARGIN;
 
 const GasStationsMap: React.FC = () => {
   const mapRef = useRef<MapView>(null);
 
-  const [mapRegion, updateMapRegion] = useState<MapRegion | undefined>();
-  const [route, updateRoute] = useState<
-    | {
-        readonly origin: Location;
-        readonly destination: Location;
-      }
-    | undefined
-  >();
+  const stationsRef = useRef<FlatList>(null);
 
-  const getMapRegion = useGetMapRegionAction();
+  const safeArea = useSafeAreaInsets();
 
-  const getStations = useCallback(
-    async ({ zoom }: { readonly zoom: number }) => {
-      try {
-        const { location, stations } = await getMapRegion(2000);
-
-        const latitudes = stations.map(place => place.location.lat);
-        const longitudes = stations.map(place => place.location.lng);
-
-        const minLat = Math.min(...latitudes, location.lat);
-        const maxLat = Math.max(...latitudes, location.lat);
-        const minLng = Math.min(...longitudes, location.lng);
-        const maxLng = Math.max(...longitudes, location.lng);
-
-        const latitude = (minLat + maxLat) / 2;
-        const longitude = (minLng + maxLng) / 2;
-
-        const distanceLat = maxLat - minLat;
-        const distanceLng = maxLng - minLng;
-
-        const latitudeDelta = distanceLat * zoom; // Adjust factor as needed
-        const longitudeDelta = distanceLng * zoom; // Adjust factor as needed
-
-        mapRef.current?.animateToRegion(
-          { latitude, longitude, latitudeDelta, longitudeDelta },
-          750,
-        );
-
-        updateMapRegion({ location, stations });
-      } catch (error) {
-        console.log('ERROR: ', JSON.stringify(error, null, '\t'));
-      }
-    },
-    [getMapRegion],
-  );
+  const getRegion = useGetMapRegionAction();
 
   useEffect(() => {
-    getStations({ zoom: 1.2 });
-  }, [getStations]);
+    getRegion(3000);
+  }, [getRegion]);
+
+  const mapRegion = useMapRegion();
+
+  const updateMapRoute = useUpdateMapRouteAction();
+
+  const selectGasStation = useSelectGasStationAction();
+
+  useEffect(() => {
+    if (mapRegion) {
+      const { location, distance } = mapRegion;
+      const { north, south, east, west } = calculateEdgeCoordinates(
+        location,
+        distance,
+      );
+      mapRef.current?.fitToCoordinates([north, south, east, west], {
+        animated: true,
+        edgePadding: {
+          top: safeArea.top + 64,
+          left: 32,
+          right: 32,
+          bottom: 16 + MAP_PADDING_BOTTOM,
+        },
+      });
+    }
+  }, [mapRegion, safeArea.top]);
 
   return (
-    <MapView ref={mapRef} style={{ flex: 1 }}>
-      {mapRegion && (
-        <Marker
-          key={'my-location'}
-          title={'My location'}
-          pinColor={'blue'}
-          coordinate={{
-            latitude: mapRegion.location.lat,
-            longitude: mapRegion.location.lng,
-          }}
-        />
-      )}
-      {mapRegion?.stations?.map(station => {
-        return (
+    <>
+      <MapView
+        ref={mapRef}
+        style={StyleSheet.absoluteFill}
+        toolbarEnabled={false}
+        customMapStyle={mapStyles.night}
+        initialRegion={{
+          latitude: 23.6345, // Latitude of the center of Mexico
+          longitude: -102.5528, // Longitude of the center of Mexico
+          latitudeDelta: 30.0, // Height of the region to show Mexico
+          longitudeDelta: 30.0, // Width of the region to show Mexico
+        }}>
+        {mapRegion?.location && (
           <Marker
-            key={`${station.id}-${station.creId}`}
+            key={'my-location'}
+            pinColor={colors.blue['500']}
             coordinate={{
-              latitude: station.location.lat,
-              longitude: station.location.lng,
-            }}
-            onPress={() => {
-              updateRoute({
-                origin: mapRegion.location,
-                destination: station.location,
-              });
+              latitude: mapRegion.location.latitude,
+              longitude: mapRegion.location.longitude,
             }}>
             <Callout>
-              <Text>{station.name}</Text>
-              <Text>{`Distance: ${numbro(station.distance / 1000).format({
-                mantissa: 2,
-                trimMantissa: false,
-              })} Km.`}</Text>
-              {station.prices.map(price => {
-                return (
-                  <Text key={price.type}>{`${price.type}: ${numbro(
-                    price.price,
-                  ).formatCurrency({
-                    mantissa: 2,
-                    trimMantissa: false,
-                  })}`}</Text>
-                );
-              })}
+              <Text>{'My location'}</Text>
             </Callout>
           </Marker>
-        );
-      })}
-      {route && (
-        <MapViewDirections
-          apikey={Config.GOOGLE_MAPS_API_KEY || '-'}
-          origin={{ latitude: route.origin.lat, longitude: route.origin.lng }}
-          destination={{
-            latitude: route.destination.lat,
-            longitude: route.destination.lng,
-          }}
-          strokeWidth={3}
-          onReady={({ distance, duration }) => {
-            console.log(
-              'ROUTE PROPS: ',
-              JSON.stringify({ distance, duration }, null, '\t'),
+        )}
+        {mapRegion?.stations?.map((item, index) => {
+          return (
+            <Marker
+              key={`${item.id}-${item.creId}`}
+              identifier={`${item.id}-${item.creId}`}
+              coordinate={item.location}
+              onPress={() => {
+                selectGasStation(item);
+                updateMapRoute({
+                  color: 'transparent',
+                  data: {
+                    origin: mapRegion.location,
+                    destination: item.location,
+                  },
+                });
+                stationsRef.current?.scrollToIndex({
+                  index,
+                  animated: true,
+                });
+              }}>
+              <GasStationMark station={item} />
+            </Marker>
+          );
+        })}
+        {mapRegion?.location && (
+          <Circle
+            center={mapRegion.location}
+            radius={mapRegion.distance}
+            strokeWidth={1}
+            strokeColor={'#1a66ff'}
+            fillColor={'rgba(230,238,255,0.5)'}
+          />
+        )}
+        <GasStationMapRoute />
+      </MapView>
+      <RegionSelector
+        style={[
+          styles.regionSelector,
+          {
+            bottom: GOOGLE_MAPS_LOGO + GAS_STATION_ITEM_HEIGHT + ITEM_MARGIN,
+          },
+        ]}
+        start={0.3}
+        maxRadius={10000} // 10km of max radius
+        updateRegion={radius => {
+          getRegion(radius);
+        }}
+      />
+      <GasStations
+        ref={stationsRef}
+        selectStation={station => {
+          if (mapRegion?.stations) {
+            selectGasStation(station);
+            updateMapRoute({
+              color: 'transparent',
+              data: {
+                origin: mapRegion.location,
+                destination: station.location,
+              },
+            });
+            mapRef.current?.animateToRegion({
+              ...station.location,
+              latitudeDelta: 0.009,
+              longitudeDelta: 0.009,
+            });
+          }
+        }}
+        displayRoute={station => {
+          if (mapRegion) {
+            selectGasStation(station);
+            updateMapRoute({
+              color: colors.green['300'],
+              data: {
+                origin: mapRegion.location,
+                destination: station.location,
+              },
+            });
+            mapRef.current?.fitToCoordinates(
+              [mapRegion.location, station.location],
+              {
+                edgePadding: {
+                  top: safeArea.top + 64,
+                  left: 32,
+                  right: 32,
+                  bottom: 16 + MAP_PADDING_BOTTOM,
+                },
+                animated: true,
+              },
             );
-          }}
-        />
-      )}
-    </MapView>
+          }
+        }}
+      />
+    </>
   );
 };
 

@@ -1,8 +1,17 @@
 import { useCallback } from 'react';
 
 import { useAppDispatch } from '@core/presentation/redux';
+import { BaseState } from '@core/presentation/redux/state';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
-import { updateDatasourceStatus } from '@fuels/presentation/redux';
+import GasStation from '@fuels/domain/entities/gas_station';
+import MapRoute from '@fuels/domain/entities/map_route';
+import RouteData from '@fuels/domain/entities/route_data';
+import {
+  selectGasStation,
+  updateDatasourceStatus,
+  updateGasStationRouteData,
+  updateMapRoute,
+} from '@fuels/presentation/redux';
 import {
   downloadDataAsyncThunk,
   getMapRegionAsyncThunk,
@@ -41,6 +50,39 @@ export const useGetMapRegionAction = () => {
     async (request: number) => {
       const response = await dispatch(getMapRegionAsyncThunk(request));
       return unwrapResult(response);
+    },
+    [dispatch],
+  );
+};
+
+export const useUpdateGasStationRouteDataAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: {
+      readonly station: GasStation;
+      readonly data: BaseState<RouteData>;
+    }) => {
+      dispatch(updateGasStationRouteData(request));
+    },
+    [dispatch],
+  );
+};
+
+export const useUpdateMapRouteAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: MapRoute) => {
+      dispatch(updateMapRoute(request));
+    },
+    [dispatch],
+  );
+};
+
+export const useSelectGasStationAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: GasStation) => {
+      dispatch(selectGasStation(request));
     },
     [dispatch],
   );
