@@ -40,7 +40,6 @@ const RegionSelector: React.FC<{
         onPanResponderRelease: ({ nativeEvent: { locationX } }) => {
           const percentage = locationX / barWidth;
           const round = Math.round(percentage * 100) / 100; // Round to 2 decimal places
-          console.log('ROUND: ', round);
           if (round >= 0.1 && round <= 1) {
             updateRegion(round * maxRadius);
           }
