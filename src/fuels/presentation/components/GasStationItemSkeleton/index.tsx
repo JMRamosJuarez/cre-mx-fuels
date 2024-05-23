@@ -7,7 +7,7 @@ import RouteDataSkeleton from '@fuels/presentation/components/GasStationRouteDat
 import { useAppTheme } from '@theme/index';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Config } from 'react-native-config';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const GasStationItemSkeleton: React.FC<{
   readonly width: number;

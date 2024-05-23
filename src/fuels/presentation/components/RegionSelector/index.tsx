@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 
 import { useDimensions } from '@core/presentation/hooks';
 import { styles } from '@fuels/presentation/components/RegionSelector/styles';
-import { useMapRegionState } from '@fuels/presentation/redux/selectors/region';
+import { useGasStationsMapRegionState } from '@fuels/presentation/redux/selectors/gas_stations_map_region';
 import { useAppTheme } from '@theme/index';
 import numbro from 'numbro';
 import { PanResponder, StyleProp, Text, View, ViewStyle } from 'react-native';
@@ -15,47 +15,45 @@ const RegionSelector: React.FC<{
 }> = ({ style, start, maxRadius, updateRegion }) => {
   const { colors } = useAppTheme();
 
-  const [progress, updateProgress] = useState<number>(start);
-
   const {
     screen: { width },
   } = useDimensions();
 
   const barWidth = useMemo(() => width - 48 - 32, [width]);
 
-  const state = useMapRegionState();
+  const state = useGasStationsMapRegionState();
 
   const panResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => state !== 'loading',
         onMoveShouldSetPanResponder: () => state !== 'loading',
-        onPanResponderMove: ({ nativeEvent: { locationX } }) => {
-          const percentage = locationX / barWidth;
+        onPanResponderMove: (_, { moveX }) => {
+          const percentage = (moveX - 32) / barWidth;
           const round = Math.round(percentage * 100) / 100; // Round to 2 decimal places
-          if (round >= 0.1 && round <= 1) {
-            updateProgress(round);
-          }
+          const value = Math.max(0.1, Math.min(round, 1));
+          updateProgress(value);
         },
-        onPanResponderRelease: ({ nativeEvent: { locationX } }) => {
-          const percentage = locationX / barWidth;
+        onPanResponderRelease: (_, { moveX }) => {
+          const percentage = (moveX - 32) / barWidth;
           const round = Math.round(percentage * 100) / 100; // Round to 2 decimal places
-          if (round >= 0.1 && round <= 1) {
-            updateRegion(round * maxRadius);
-          }
+          const value = Math.max(0.1, Math.min(round, 1));
+          updateRegion(value * maxRadius);
         },
       }),
-    [maxRadius, state, barWidth, updateRegion],
+    [maxRadius, barWidth, state, updateRegion],
   );
+
+  const [progress, updateProgress] = useState<number>(start);
 
   return (
     <View
-      {...panResponder.panHandlers}
       style={[
         style,
         styles.container,
         { backgroundColor: colors.primary['50'] },
-      ]}>
+      ]}
+      {...panResponder.panHandlers}>
       <View style={styles.barContainer}>
         <View
           style={[

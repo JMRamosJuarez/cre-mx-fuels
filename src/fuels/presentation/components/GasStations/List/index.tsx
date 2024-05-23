@@ -4,22 +4,18 @@ import { useDimensions } from '@core/presentation/hooks';
 import GasStationItem from '@fuels/presentation/components/GasStationItem';
 import { styles } from '@fuels/presentation/components/GasStations/List/styles';
 import GasStationsProps from '@fuels/presentation/components/GasStations/props';
-import { useMapRegion } from '@fuels/presentation/redux/selectors/region';
+import { useGasStationsMapRegion } from '@fuels/presentation/redux/selectors/gas_stations_map_region';
 import { FlatList } from 'react-native';
 
 const GasStationsList = forwardRef<FlatList, GasStationsProps>(
-  ({ selectStation, displayRoute }, ref) => {
+  ({ onGasStationSelected, displayRoute }, ref) => {
     const {
       screen: { width },
     } = useDimensions();
 
     const ITEM_WIDTH = useMemo(() => width - 32 - 16, [width]);
 
-    const region = useMapRegion();
-
-    const stations = useMemo(() => {
-      return region?.stations || [];
-    }, [region?.stations]);
+    const { origin, stations } = useGasStationsMapRegion();
 
     return (
       <FlatList
@@ -36,13 +32,13 @@ const GasStationsList = forwardRef<FlatList, GasStationsProps>(
           offset: (ITEM_WIDTH + 16) * index,
           index,
         })}
-        renderItem={({ item }) => {
+        renderItem={({ index, item }) => {
           return (
             <GasStationItem
               width={ITEM_WIDTH}
               station={item}
               displayRoute={station => {
-                displayRoute(station);
+                displayRoute({ index, origin, station });
               }}
             />
           );
@@ -50,7 +46,7 @@ const GasStationsList = forwardRef<FlatList, GasStationsProps>(
         onMomentumScrollEnd={async ({ nativeEvent: { contentOffset } }) => {
           const index = Math.floor(contentOffset.x / ITEM_WIDTH);
           const station = stations[index];
-          selectStation(station);
+          onGasStationSelected({ index, origin, station });
         }}
       />
     );

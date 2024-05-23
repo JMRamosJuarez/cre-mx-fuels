@@ -6,6 +6,10 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
   },
+  price: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   indicator: {
     width: 0,
     height: 0,

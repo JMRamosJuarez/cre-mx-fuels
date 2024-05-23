@@ -66,7 +66,7 @@ export default class GasStationsDbDatasourceImpl
 
     const entities = Array.from({ length: rows.length }).map((_, index) => {
       const model: GasStationDbModel = rows.item(index);
-      return this.mapper.mapMapDbModel(request.location, model);
+      return this.mapper.mapMapDbModel(request.origin, model);
     });
 
     return entities

@@ -54,11 +54,11 @@ export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
   },
 );
 
-export const getMapRegionAsyncThunk = createAppAsyncThunk<
+export const getGasStationsMapRegionAsyncThunk = createAppAsyncThunk<
   number,
   GasStationsMapRegion
 >(
-  '/get-map-region',
+  '/get-gas-stations-map-region',
   async (
     distance,
     {
@@ -70,11 +70,11 @@ export const getMapRegionAsyncThunk = createAppAsyncThunk<
       },
     },
   ) => {
-    const location = await geolocator.getLocation();
+    const origin = await geolocator.getLocation();
     const stations = await getGasStationsUseCase.execute({
       distance,
-      location,
+      origin,
     });
-    return { distance, location, stations };
+    return { distance, origin, stations };
   },
 );

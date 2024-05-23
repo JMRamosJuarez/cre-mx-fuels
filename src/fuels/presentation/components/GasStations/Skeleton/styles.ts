@@ -10,6 +10,6 @@ export const styles = StyleSheet.create({
   },
   stationsContent: {
     paddingHorizontal: 16,
-    paddingBottom: 38,
+    paddingBottom: 16,
   },
 });

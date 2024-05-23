@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ProgressBar from '@fuels/presentation/components/ProgressBar';
+import ProgressBar from '@core/presentation/components/ProgressBar';
 import { useExecutionProgress } from '@fuels/presentation/redux/selectors/execution_process';
 
 const GasStationsProgressBar: React.FC = () => {

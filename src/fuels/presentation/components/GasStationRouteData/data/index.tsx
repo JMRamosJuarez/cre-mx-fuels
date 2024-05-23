@@ -2,7 +2,7 @@ import React from 'react';
 
 import GasStation from '@fuels/domain/entities/gas_station';
 import { styles } from '@fuels/presentation/components/GasStationRouteData/data/styles';
-import { useGasStationRouteData } from '@fuels/presentation/redux/selectors/routes';
+import { useGasStationRouteData } from '@fuels/presentation/redux/selectors/routes_data';
 import numbro from 'numbro';
 import { Text, View } from 'react-native';
 

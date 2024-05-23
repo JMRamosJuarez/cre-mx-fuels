@@ -1,7 +1,8 @@
 import { AppSelector, useAppSelector } from '@core/presentation/redux';
-import MapRoute from '@fuels/domain/entities/map_route';
+import GasStationMapRoute from '@fuels/domain/entities/gas_station_map_route';
 
-const mapRoute: AppSelector<MapRoute> = ({ gasStationsReducer }) =>
-  gasStationsReducer.mapRoute;
+const mapRoute: AppSelector<GasStationMapRoute | undefined> = ({
+  gasStationsReducer,
+}) => gasStationsReducer.gasStationMapRoute;
 
-export const useMapRoute = () => useAppSelector(mapRoute);
+export const useGasStationMapRoute = () => useAppSelector(mapRoute);

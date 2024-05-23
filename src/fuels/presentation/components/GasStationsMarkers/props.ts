@@ -1,17 +1,12 @@
 import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
 
-type GasStationsProps = {
+type GasStationsMarkersProps = {
   readonly onGasStationSelected: (request: {
-    readonly index: number;
-    readonly origin: Location;
-    readonly station: GasStation;
-  }) => void;
-  readonly displayRoute: (request: {
     readonly index: number;
     readonly origin: Location;
     readonly station: GasStation;
   }) => void;
 };
 
-export default GasStationsProps;
+export default GasStationsMarkersProps;

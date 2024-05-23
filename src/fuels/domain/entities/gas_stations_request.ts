@@ -2,7 +2,7 @@ import Location from '@core/domain/entities/location';
 
 type GasStationsRequest = {
   readonly distance: number;
-  readonly location: Location;
+  readonly origin: Location;
 };
 
 export default GasStationsRequest;

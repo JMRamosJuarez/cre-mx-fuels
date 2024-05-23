@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ProgressBarProps from '@fuels/presentation/components/ProgressBar/props';
-import { styles } from '@fuels/presentation/components/ProgressBar/styles';
+import ProgressBarProps from '@core/presentation/components/ProgressBar/props';
+import { styles } from '@core/presentation/components/ProgressBar/styles';
 import { useAppTheme } from '@theme/index';
 import { Text, View } from 'react-native';
 

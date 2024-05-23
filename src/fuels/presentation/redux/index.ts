@@ -3,11 +3,11 @@ import { BaseState } from '@core/presentation/redux/state';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStation from '@fuels/domain/entities/gas_station';
-import MapRoute from '@fuels/domain/entities/map_route';
+import GasStationMapRoute from '@fuels/domain/entities/gas_station_map_route';
 import RouteData from '@fuels/domain/entities/route_data';
 import { initialState } from '@fuels/presentation/redux/state';
 import {
-  getMapRegionAsyncThunk,
+  getGasStationsMapRegionAsyncThunk,
   validateDatasourceAsyncThunk,
 } from '@fuels/presentation/redux/thunks';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
@@ -28,6 +28,12 @@ const slice = createSlice({
     ) => {
       state.executionProcess[payload.type] = payload.progress;
     },
+    updateGasStationRoute: (
+      state,
+      { payload }: PayloadAction<GasStationMapRoute>,
+    ) => {
+      state.gasStationMapRoute = payload;
+    },
     updateGasStationRouteData: (
       state,
       {
@@ -37,13 +43,13 @@ const slice = createSlice({
         readonly data: BaseState<RouteData>;
       }>,
     ) => {
-      state.routes[`${station.id}-${station.creId}`] = data;
-    },
-    updateMapRoute: (state, { payload }: PayloadAction<MapRoute>) => {
-      state.mapRoute = payload;
+      state.routesData[`${station.id}-${station.creId}`] = data;
     },
     selectGasStation: (state, { payload }: PayloadAction<GasStation>) => {
       state.station = payload;
+    },
+    displayGasStationsArea: (state, { payload }: PayloadAction<boolean>) => {
+      state.area.visible = payload;
     },
   },
   extraReducers: builder => {
@@ -62,35 +68,45 @@ const slice = createSlice({
       });
 
     builder
-      .addCase(getMapRegionAsyncThunk.pending, state => {
-        state.region = { type: 'loading' };
+      .addCase(getGasStationsMapRegionAsyncThunk.pending, state => {
+        state.gasStationsMapRegion = { type: 'loading' };
       })
-      .addCase(getMapRegionAsyncThunk.rejected, (state, { payload }) => {
-        state.region = {
-          type: 'error',
-          error: payload || new AppError(AppErrorType.UNKNOWN_ERROR),
-        };
-      })
-      .addCase(getMapRegionAsyncThunk.fulfilled, (state, { payload }) => {
-        state.region = { type: 'success', data: payload };
-        if (payload.stations.length > 0) {
-          const station = payload.stations[0];
-          state.station = station;
-          state.mapRoute = {
-            color: 'transparent',
-            data: { origin: payload.location, destination: station.location },
+      .addCase(
+        getGasStationsMapRegionAsyncThunk.rejected,
+        (state, { payload }) => {
+          state.gasStationsMapRegion = {
+            type: 'error',
+            error: payload || new AppError(AppErrorType.UNKNOWN_ERROR),
           };
-        }
-      });
+        },
+      )
+      .addCase(
+        getGasStationsMapRegionAsyncThunk.fulfilled,
+        (state, { payload }) => {
+          state.area = { visible: true, radius: payload.distance };
+          state.location = { type: 'success', data: payload.origin };
+          if (payload.stations.length > 0) {
+            state.gasStationMapRoute = {
+              color: 'transparent',
+              origin: payload.origin,
+              station: payload.stations[0],
+            };
+            state.gasStationsMapRegion = { type: 'success', data: payload };
+          } else {
+            state.gasStationsMapRegion = { type: 'empty' };
+          }
+        },
+      );
   },
 });
 
 export const {
   updateDatasourceStatus,
   updateDownloadProcess,
+  updateGasStationRoute,
   updateGasStationRouteData,
-  updateMapRoute,
   selectGasStation,
+  displayGasStationsArea,
 } = slice.actions;
 
 export const gasStationsReducer = slice.reducer;

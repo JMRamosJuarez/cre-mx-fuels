@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import GasStation from '@fuels/domain/entities/gas_station';
 import { styles } from '@fuels/presentation/components/GasStationMark/styles';
-import { useSelectedStation } from '@fuels/presentation/redux/selectors/station';
+import { useSelectedStation } from '@fuels/presentation/redux/selectors';
 import { useAppTheme } from '@theme/index';
 import numbro from 'numbro';
 import { Text, View } from 'react-native';
@@ -43,10 +43,7 @@ const GasStationMark: React.FC<{
         ]}>
         <Text
           style={[
-            {
-              textAlign: 'center',
-              fontWeight: 'bold',
-            },
+            styles.price,
             {
               color: colors.primary['50'],
             },

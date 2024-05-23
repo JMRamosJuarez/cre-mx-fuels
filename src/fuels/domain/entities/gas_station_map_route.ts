@@ -1,10 +1,10 @@
 import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
 
-type GasStationsMapRegion = {
-  readonly distance: number;
+type GasStationMapRoute = {
+  readonly color: string;
   readonly origin: Location;
-  readonly stations: GasStation[];
+  readonly station: GasStation;
 };
 
-export default GasStationsMapRegion;
+export default GasStationMapRoute;

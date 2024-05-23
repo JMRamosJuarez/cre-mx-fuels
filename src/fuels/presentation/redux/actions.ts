@@ -2,32 +2,21 @@ import { useCallback } from 'react';
 
 import { useAppDispatch } from '@core/presentation/redux';
 import { BaseState } from '@core/presentation/redux/state';
-import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasStation from '@fuels/domain/entities/gas_station';
-import MapRoute from '@fuels/domain/entities/map_route';
+import GasStationMapRoute from '@fuels/domain/entities/gas_station_map_route';
 import RouteData from '@fuels/domain/entities/route_data';
 import {
+  displayGasStationsArea,
   selectGasStation,
-  updateDatasourceStatus,
+  updateGasStationRoute,
   updateGasStationRouteData,
-  updateMapRoute,
 } from '@fuels/presentation/redux';
 import {
   downloadDataAsyncThunk,
-  getMapRegionAsyncThunk,
+  getGasStationsMapRegionAsyncThunk,
   validateDatasourceAsyncThunk,
 } from '@fuels/presentation/redux/thunks';
 import { unwrapResult } from '@reduxjs/toolkit';
-
-export const useUpdateDatasourceStatusAction = () => {
-  const dispatch = useAppDispatch();
-  return useCallback(
-    (status: DatasourceStatus) => {
-      dispatch(updateDatasourceStatus(status));
-    },
-    [dispatch],
-  );
-};
 
 export const useValidateDatasourceAction = () => {
   const dispatch = useAppDispatch();
@@ -44,12 +33,34 @@ export const useDownloadDataAction = () => {
   }, [dispatch]);
 };
 
-export const useGetMapRegionAction = () => {
+export const useGetGasStationsMapRegionAction = () => {
   const dispatch = useAppDispatch();
   return useCallback(
     async (request: number) => {
-      const response = await dispatch(getMapRegionAsyncThunk(request));
+      const response = await dispatch(
+        getGasStationsMapRegionAsyncThunk(request),
+      );
       return unwrapResult(response);
+    },
+    [dispatch],
+  );
+};
+
+export const useSelectGasStationAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: GasStation) => {
+      dispatch(selectGasStation(request));
+    },
+    [dispatch],
+  );
+};
+
+export const useUpdateGasStationRouteAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: GasStationMapRoute) => {
+      dispatch(updateGasStationRoute(request));
     },
     [dispatch],
   );
@@ -68,21 +79,11 @@ export const useUpdateGasStationRouteDataAction = () => {
   );
 };
 
-export const useUpdateMapRouteAction = () => {
+export const useDisplayGasStationAreaAction = () => {
   const dispatch = useAppDispatch();
   return useCallback(
-    (request: MapRoute) => {
-      dispatch(updateMapRoute(request));
-    },
-    [dispatch],
-  );
-};
-
-export const useSelectGasStationAction = () => {
-  const dispatch = useAppDispatch();
-  return useCallback(
-    (request: GasStation) => {
-      dispatch(selectGasStation(request));
+    (request: boolean) => {
+      dispatch(displayGasStationsArea(request));
     },
     [dispatch],
   );

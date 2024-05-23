@@ -11,7 +11,7 @@ const keySelector: AppSelector<string, { readonly station: GasStation }> = (
 ) => `${station.id}-${station.creId}`;
 
 const routes: AppSelector<GasStationRoutesState> = ({ gasStationsReducer }) =>
-  gasStationsReducer.routes;
+  gasStationsReducer.routesData;
 
 const route = createSelector(keySelector, routes, (key, items) => {
   return items[key] || { type: 'waiting' };
