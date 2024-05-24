@@ -26,6 +26,7 @@ export default class GasPricesModuleImpl implements GasPricesModule {
   get creDatasource(): GasPricesDatasource {
     if (!this._creDatasource) {
       this._creDatasource = new GasPricesCreDatasourceImpl(
+        this.coreModule.xmlParser,
         this.coreModule.gasPricesMapper,
         this.coreModule.creHttpClient,
       );

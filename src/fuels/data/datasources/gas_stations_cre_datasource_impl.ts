@@ -1,3 +1,4 @@
+import AppXMLParser from '@core/domain/data_access/app_xml_parser';
 import HttpClient from '@core/domain/data_access/http_client';
 import GasStationsFileModel from '@fuels/data/models/gas_stations_file_model';
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
@@ -6,14 +7,12 @@ import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
 import GasStationsMapper from '@fuels/domain/mappers/gas_stations_mapper';
-import { XMLParser } from 'fast-xml-parser';
 
 export default class GasStationsCreDatasourceImpl
   implements GasStationsDatasource
 {
-  private _xmlParser?: XMLParser;
-
   constructor(
+    private readonly xmlParser: AppXMLParser,
     private readonly mapper: GasStationsMapper,
     private readonly creHttpClient: HttpClient,
   ) {}
@@ -47,12 +46,5 @@ export default class GasStationsCreDatasourceImpl
     throw new Error(
       'Method "deleteGasStations" is not implemented in GasStationsCreDatasourceImpl.',
     );
-  }
-
-  private get xmlParser(): XMLParser {
-    if (!this._xmlParser) {
-      this._xmlParser = new XMLParser({ ignoreAttributes: false });
-    }
-    return this._xmlParser;
   }
 }

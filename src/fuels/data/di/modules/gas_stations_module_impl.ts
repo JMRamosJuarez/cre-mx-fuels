@@ -26,6 +26,7 @@ export default class GasStationsModuleImpl implements GasStationsModule {
   get creDatasource(): GasStationsDatasource {
     if (!this._creDatasource) {
       this._creDatasource = new GasStationsCreDatasourceImpl(
+        this.coreModule.xmlParser,
         this.coreModule.gasStationsMapper,
         this.coreModule.creHttpClient,
       );

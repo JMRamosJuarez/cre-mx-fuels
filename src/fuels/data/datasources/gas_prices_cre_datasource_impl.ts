@@ -1,15 +1,14 @@
+import AppXMLParser from '@core/domain/data_access/app_xml_parser';
 import HttpClient from '@core/domain/data_access/http_client';
 import GasPricesXmlModel from '@fuels/data/models/gas_prices_xml_model';
 import GasPricesDatasource from '@fuels/domain/datasources/gas_prices_datasource';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasPrices from '@fuels/domain/entities/gas_prices';
 import GasPricesMapper from '@fuels/domain/mappers/gas_prices_mapper';
-import { XMLParser } from 'fast-xml-parser';
 
 export default class GasPricesCreDatasourceImpl implements GasPricesDatasource {
-  private _xmlParser?: XMLParser;
-
   constructor(
+    private readonly xmlParser: AppXMLParser,
     private readonly mapper: GasPricesMapper,
     private readonly creHttpClient: HttpClient,
   ) {}
@@ -54,12 +53,5 @@ export default class GasPricesCreDatasourceImpl implements GasPricesDatasource {
     throw new Error(
       'Method "deleteGasPrices" is not implemented in GasPricesCreDatasourceImpl.',
     );
-  }
-
-  private get xmlParser(): XMLParser {
-    if (!this._xmlParser) {
-      this._xmlParser = new XMLParser({ ignoreAttributes: false });
-    }
-    return this._xmlParser;
   }
 }

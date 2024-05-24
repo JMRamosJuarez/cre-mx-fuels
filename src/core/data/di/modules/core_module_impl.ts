@@ -1,8 +1,10 @@
 import AppDbClientImpl from '@core/data/data_access/app_db_client_impl';
 import AppGeoLocatorImpl from '@core/data/data_access/app_geolocator_impl';
+import AppXMLParserImpl from '@core/data/data_access/app_xml_parser_impl';
 import HttpClientImpl from '@core/data/data_access/http_client_impl';
 import AppDbClient from '@core/domain/data_access/app_db_client';
 import AppGeoLocator from '@core/domain/data_access/app_geolocator';
+import AppXMLParser from '@core/domain/data_access/app_xml_parser';
 import HttpClient from '@core/domain/data_access/http_client';
 import CoreModule from '@core/domain/di/modules/core_module';
 import GasPricesMapperImpl from '@fuels/data/mappers/gas_prices_mapper_impl';
@@ -21,12 +23,20 @@ import {
 enablePromise(true);
 
 export default class CoreModuleImpl implements CoreModule {
+  private _xmlParser?: AppXMLParser;
   private _creHttpClient?: HttpClient;
   private _gasStationsMapper?: GasStationsMapper;
   private _gasPricesMapper?: GasPricesMapper;
   private _dbClient?: AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet>;
 
   constructor(private _appGeolocator?: AppGeoLocator) {}
+
+  get xmlParser(): AppXMLParser {
+    if (!this._xmlParser) {
+      this._xmlParser = new AppXMLParserImpl();
+    }
+    return this._xmlParser;
+  }
 
   get creHttpClient(): HttpClient {
     if (!this._creHttpClient) {
