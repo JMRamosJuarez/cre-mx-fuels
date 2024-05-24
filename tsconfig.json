@@ -5,6 +5,7 @@
     "paths": {
       "@assets/*": ["./src/assets/*"],
       "@theme/*": ["./src/theme/*"],
+      "@localization/*": ["./src/localization/*"],
       "@core/*": ["./src/core/*"],
       "@fuels/*": ["./src/fuels/*"]
     }

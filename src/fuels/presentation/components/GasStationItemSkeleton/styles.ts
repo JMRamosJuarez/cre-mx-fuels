@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
   prices: { flexDirection: 'row', alignItems: 'center' },
   price: { flex: 1, marginHorizontal: 1 },
   about: {
+    textAlign: 'center',
     fontSize: 12,
     lineHeight: 16,
     paddingHorizontal: 12,

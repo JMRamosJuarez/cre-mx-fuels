@@ -5,6 +5,7 @@ import { styles } from '@fuels/presentation/components/RegionSelector/styles';
 import { useGasStationsMapRegionState } from '@fuels/presentation/redux/selectors/gas_stations_map_region';
 import { useAppTheme } from '@theme/index';
 import numbro from 'numbro';
+import { useTranslation } from 'react-i18next';
 import { PanResponder, StyleProp, Text, View, ViewStyle } from 'react-native';
 
 const RegionSelector: React.FC<{
@@ -13,6 +14,8 @@ const RegionSelector: React.FC<{
   readonly maxRadius: number;
   readonly updateRegion: (radius: number) => void;
 }> = ({ style, start, maxRadius, updateRegion }) => {
+  const { t } = useTranslation();
+
   const { colors } = useAppTheme();
 
   const {
@@ -88,11 +91,13 @@ const RegionSelector: React.FC<{
         />
       </View>
       <Text style={styles.label}>
-        {`Area of ${numbro((progress * maxRadius) / 1000).format({
-          mantissa: 2,
-          trimMantissa: false,
-          thousandSeparated: true,
-        })} Km.`}
+        {t('area_of', {
+          value: numbro((progress * maxRadius) / 1000).format({
+            mantissa: 2,
+            trimMantissa: false,
+            thousandSeparated: true,
+          }),
+        })}
       </Text>
     </View>
   );

@@ -5,6 +5,7 @@ import GasPriceItemSkeleton from '@fuels/presentation/components/GasPriceItemSke
 import { styles } from '@fuels/presentation/components/GasStationItemSkeleton/styles';
 import RouteDataSkeleton from '@fuels/presentation/components/GasStationRouteData/skeleton';
 import { useAppTheme } from '@theme/index';
+import { Trans, useTranslation } from 'react-i18next';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Config } from 'react-native-config';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,6 +13,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 const GasStationItemSkeleton: React.FC<{
   readonly width: number;
 }> = ({ width }) => {
+  const { t } = useTranslation();
+
   const { boxShadow, colors } = useAppTheme();
 
   const prices = useMemo(() => new Array(3).fill({}), []);
@@ -41,12 +44,17 @@ const GasStationItemSkeleton: React.FC<{
           Linking.openURL(Config.CRE_URL || '-');
         }}>
         <Text style={styles.about}>
-          {
-            'Information provided by the CRE (COMISIÓN REGULADORA DE ENERGÍA). To know more go to '
-          }
-          <Text style={[styles.aboutLink, { color: colors.red['500'] }]}>
-            {'datos.gob.mx'}
-          </Text>
+          <Trans
+            i18nKey={'information_provider'}
+            components={{
+              underline: (
+                <Text
+                  style={[styles.aboutLink, { color: colors.red['500'] }]}
+                />
+              ),
+            }}
+            values={{ url: 'datos.gob.mx' }}
+          />
         </Text>
       </TouchableOpacity>
       <View style={styles.buttons}>
@@ -60,7 +68,7 @@ const GasStationItemSkeleton: React.FC<{
             name={'directions'}
           />
           <Text style={[styles.buttonLabel, { color: colors.primary['50'] }]}>
-            {'Show route'}
+            {t('show_route')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -77,7 +85,7 @@ const GasStationItemSkeleton: React.FC<{
             name={'navigation'}
           />
           <Text style={[styles.buttonLabel, { color: colors.blue['700'] }]}>
-            {'Go'}
+            {t('go')}
           </Text>
         </TouchableOpacity>
       </View>

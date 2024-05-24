@@ -19,6 +19,7 @@ module.exports = {
         alias: {
           '@theme': './src/theme',
           '@assets': './src/assets',
+          '@localization': './src/localization',
           '@core': './src/core',
           '@fuels': './src/fuels',
         },
