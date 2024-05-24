@@ -1,3 +1,4 @@
+import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import GasPricesDatasource from '@fuels/domain/datasources/gas_prices_datasource';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
@@ -17,13 +18,12 @@ export default class GasPricesRepositoryImpl implements GasPricesRepository {
 
   async getGasPrices(request: string): Promise<GasPrices> {
     const status = await this.dbDatasource.validateDatasource();
+
     if (status === 'available') {
       return await this.dbDatasource.getGasPricesByStationId(request);
     }
-    const remote = await this.creDatasource.getGasPrices();
-    const promises = remote.map(item => this.dbDatasource.saveGasPrices(item));
-    await Promise.all(promises);
-    return await this.dbDatasource.getGasPricesByStationId(request);
+
+    throw new AppError(AppErrorType.DATASOURCE_NOT_AVAILABLE);
   }
 
   async downloadPrices(): Promise<Observable<ExecutionProcess>> {

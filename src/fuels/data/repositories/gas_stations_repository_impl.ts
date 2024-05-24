@@ -47,6 +47,7 @@ export default class GasStationsRepositoryImpl
      */
     const gasStations = await this.creDatasource.getGasStations({
       distance: 0,
+      origin: { latitude: -1, longitude: -1 },
     });
 
     return from(gasStations).pipe(
