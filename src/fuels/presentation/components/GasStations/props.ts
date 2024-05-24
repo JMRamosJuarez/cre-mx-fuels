@@ -12,6 +12,7 @@ type GasStationsProps = {
     readonly origin: Location;
     readonly station: GasStation;
   }) => void;
+  readonly updateRegion: (request?: number) => void;
 };
 
 export default GasStationsProps;

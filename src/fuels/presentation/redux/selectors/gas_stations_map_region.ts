@@ -12,6 +12,8 @@ const stateSelector = createSelector(region, state => {
   return state.type;
 });
 
+export const useGasStationsMapRegionState = () => useAppSelector(stateSelector);
+
 const data = createSelector(region, state => {
   if (state.type === 'success') {
     return state.data;
@@ -19,6 +21,13 @@ const data = createSelector(region, state => {
   throw new AppError(AppErrorType.INVALID_STATE_ACCESS);
 });
 
-export const useGasStationsMapRegionState = () => useAppSelector(stateSelector);
-
 export const useGasStationsMapRegion = () => useAppSelector(data);
+
+const error = createSelector(region, state => {
+  if (state.type === 'error') {
+    return state.error;
+  }
+  return new AppError(AppErrorType.INVALID_STATE_ACCESS);
+});
+
+export const useGasStationsMapRegionError = () => useAppSelector(error);

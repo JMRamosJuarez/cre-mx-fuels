@@ -39,7 +39,7 @@ const GasStationsMap: React.FC = () => {
   const getRegion = useGetGasStationsMapRegionAction();
 
   const updateRegion = useCallback(
-    async (radius: number) => {
+    async (radius?: number) => {
       try {
         const { distance, origin } = await getRegion(radius);
 
@@ -148,6 +148,7 @@ const GasStationsMap: React.FC = () => {
           });
         }}
         displayRoute={displayRoute}
+        updateRegion={updateRegion}
       />
     </>
   );

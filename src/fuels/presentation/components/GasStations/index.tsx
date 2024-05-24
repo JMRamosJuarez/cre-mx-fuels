@@ -19,7 +19,7 @@ const GasStations = forwardRef<FlatList, GasStationsProps>((props, ref) => {
     case 'success':
       return <GasStationsList ref={ref} {...props} />;
     default:
-      return <GasStationsError />;
+      return <GasStationsError {...props} />;
   }
 });
 

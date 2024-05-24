@@ -17,4 +17,17 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginHorizontal: 24,
   },
+  button: {
+    marginHorizontal: 32,
+    marginVertical: 16,
+    paddingVertical: 12,
+    borderRadius: 48,
+  },
+  buttonLabel: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 14,
+    lineHeight: 18,
+    marginHorizontal: 8,
+  },
 });
