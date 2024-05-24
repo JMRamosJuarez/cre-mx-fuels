@@ -17,6 +17,7 @@ export default class GasStationsModuleImpl implements GasStationsModule {
     if (!this._dbDatasource) {
       this._dbDatasource = new GasStationsDbDatasourceImpl(
         this.coreModule.gasStationsMapper,
+        this.coreModule.appStorage,
         this.coreModule.dbClient,
       );
     }
@@ -29,6 +30,7 @@ export default class GasStationsModuleImpl implements GasStationsModule {
         this.coreModule.xmlParser,
         this.coreModule.gasStationsMapper,
         this.coreModule.creHttpClient,
+        this.coreModule.appStorage,
       );
     }
     return this._creDatasource;

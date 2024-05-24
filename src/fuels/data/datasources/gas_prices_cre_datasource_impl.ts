@@ -1,3 +1,4 @@
+import AppStorage from '@core/domain/data_access/app_storage';
 import AppXMLParser from '@core/domain/data_access/app_xml_parser';
 import HttpClient from '@core/domain/data_access/http_client';
 import GasPricesXmlModel from '@fuels/data/models/gas_prices_xml_model';
@@ -11,6 +12,7 @@ export default class GasPricesCreDatasourceImpl implements GasPricesDatasource {
     private readonly xmlParser: AppXMLParser,
     private readonly mapper: GasPricesMapper,
     private readonly creHttpClient: HttpClient,
+    private readonly appStorage: AppStorage,
   ) {}
 
   validateDatasource(): Promise<DatasourceStatus> {
@@ -39,6 +41,15 @@ export default class GasPricesCreDatasourceImpl implements GasPricesDatasource {
     const prices = models.map(model => {
       return this.mapper.mapMapXmlModel(model);
     });
+
+    const size = prices.reduce(
+      (accumulator, current) => accumulator + current.prices.length,
+      0,
+    );
+
+    await this.appStorage.saveObject<{
+      readonly size: number;
+    }>('prices_size', { size });
 
     return prices;
   }

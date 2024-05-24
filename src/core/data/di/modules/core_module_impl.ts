@@ -1,9 +1,11 @@
 import AppDbClientImpl from '@core/data/data_access/app_db_client_impl';
 import AppGeoLocatorImpl from '@core/data/data_access/app_geolocator_impl';
+import AppStorageImpl from '@core/data/data_access/app_storage_impl';
 import AppXMLParserImpl from '@core/data/data_access/app_xml_parser_impl';
 import HttpClientImpl from '@core/data/data_access/http_client_impl';
 import AppDbClient from '@core/domain/data_access/app_db_client';
 import AppGeoLocator from '@core/domain/data_access/app_geolocator';
+import AppStorage from '@core/domain/data_access/app_storage';
 import AppXMLParser from '@core/domain/data_access/app_xml_parser';
 import HttpClient from '@core/domain/data_access/http_client';
 import CoreModule from '@core/domain/di/modules/core_module';
@@ -24,18 +26,32 @@ enablePromise(true);
 
 export default class CoreModuleImpl implements CoreModule {
   private _xmlParser?: AppXMLParser;
+  private _appGeolocator?: AppGeoLocator;
+  private _appStorage?: AppStorage;
   private _creHttpClient?: HttpClient;
   private _gasStationsMapper?: GasStationsMapper;
   private _gasPricesMapper?: GasPricesMapper;
   private _dbClient?: AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet>;
-
-  constructor(private _appGeolocator?: AppGeoLocator) {}
 
   get xmlParser(): AppXMLParser {
     if (!this._xmlParser) {
       this._xmlParser = new AppXMLParserImpl();
     }
     return this._xmlParser;
+  }
+
+  get appGeolocator(): AppGeoLocator {
+    if (!this._appGeolocator) {
+      this._appGeolocator = new AppGeoLocatorImpl();
+    }
+    return this._appGeolocator;
+  }
+
+  get appStorage(): AppStorage {
+    if (!this._appStorage) {
+      this._appStorage = new AppStorageImpl();
+    }
+    return this._appStorage;
   }
 
   get creHttpClient(): HttpClient {
@@ -61,13 +77,6 @@ export default class CoreModuleImpl implements CoreModule {
       this._gasPricesMapper = new GasPricesMapperImpl();
     }
     return this._gasPricesMapper;
-  }
-
-  get appGeolocator(): AppGeoLocator {
-    if (!this._appGeolocator) {
-      this._appGeolocator = new AppGeoLocatorImpl();
-    }
-    return this._appGeolocator;
   }
 
   get dbClient(): AppDbClient<SQLiteDatabase, DatabaseParams, ResultSet> {

@@ -1,5 +1,5 @@
-import AppGeoLocator from '@core/domain/data_access/app_geolocator';
 import CoreComponent from '@core/domain/di/components/core_component';
+import CoreModule from '@core/domain/di/modules/core_module';
 import AppError from '@core/domain/entities/app_error';
 import { AppReduxStore } from '@core/presentation/redux/store';
 import { BaseThunkAPI } from 'node_modules/@reduxjs/toolkit/dist/createAsyncThunk';
@@ -11,7 +11,7 @@ import {
 } from 'react-redux';
 
 export interface AppExtra {
-  readonly geolocator: AppGeoLocator;
+  readonly coreModule: CoreModule;
   readonly coreComponent: CoreComponent;
 }
 

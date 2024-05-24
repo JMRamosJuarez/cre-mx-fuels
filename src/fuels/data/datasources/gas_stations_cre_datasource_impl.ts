@@ -1,3 +1,4 @@
+import AppStorage from '@core/domain/data_access/app_storage';
 import AppXMLParser from '@core/domain/data_access/app_xml_parser';
 import HttpClient from '@core/domain/data_access/http_client';
 import GasStationsFileModel from '@fuels/data/models/gas_stations_file_model';
@@ -15,6 +16,7 @@ export default class GasStationsCreDatasourceImpl
     private readonly xmlParser: AppXMLParser,
     private readonly mapper: GasStationsMapper,
     private readonly creHttpClient: HttpClient,
+    private readonly appStorage: AppStorage,
   ) {}
 
   validateDatasource(): Promise<DatasourceStatus> {
@@ -38,8 +40,16 @@ export default class GasStationsCreDatasourceImpl
   async getGasStations(_: GasStationsRequest): Promise<GasStation[]> {
     const xml = await this.creHttpClient.get<string>('/publicaciones/places');
     const file: GasStationsFileModel = this.xmlParser.parse(xml);
+
     const models = file.places?.place || [];
-    return models.map(m => this.mapper.mapMapXmlModel(m));
+
+    const stations = models.map(m => this.mapper.mapMapXmlModel(m));
+
+    await this.appStorage.saveObject<{
+      readonly size: number;
+    }>('stations_size', { size: stations.length });
+
+    return stations;
   }
 
   deleteGasStations(): Promise<number> {

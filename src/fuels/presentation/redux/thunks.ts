@@ -57,8 +57,15 @@ export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
 
 export const getLocationAsyncThunk = createAppAsyncThunk<undefined, Location>(
   '/get-location',
-  async (_, { extra: { geolocator } }) => {
-    return await geolocator.getLocation();
+  async (
+    _,
+    {
+      extra: {
+        coreModule: { appGeolocator },
+      },
+    },
+  ) => {
+    return await appGeolocator.getLocation();
   },
 );
 
@@ -72,7 +79,7 @@ export const getGasStationsMapRegionAsyncThunk = createAppAsyncThunk<
     {
       getState,
       extra: {
-        geolocator,
+        coreModule: { appGeolocator },
         coreComponent: {
           gasStationsComponent: { getGasStationsUseCase },
         },
@@ -80,7 +87,7 @@ export const getGasStationsMapRegionAsyncThunk = createAppAsyncThunk<
     },
   ) => {
     const distance = request || getState().gasStationsReducer.area.radius;
-    const origin = await geolocator.getLocation();
+    const origin = await appGeolocator.getLocation();
     const stations = await getGasStationsUseCase.execute({
       distance,
       origin,

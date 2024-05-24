@@ -1,4 +1,5 @@
 import AppDbClient from '@core/domain/data_access/app_db_client';
+import AppStorage from '@core/domain/data_access/app_storage';
 import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import GasStationDbModel from '@fuels/data/models/gas_station_db_model';
 import GasStationsDatasource from '@fuels/domain/datasources/gas_stations_datasource';
@@ -14,6 +15,7 @@ export default class GasStationsDbDatasourceImpl
 {
   constructor(
     private readonly mapper: GasStationsMapper,
+    private readonly appStorage: AppStorage,
     private readonly dbClient: AppDbClient<
       SQLite.SQLiteDatabase,
       SQLite.DatabaseParams,
@@ -26,9 +28,17 @@ export default class GasStationsDbDatasourceImpl
       query: 'SELECT COUNT(*) FROM gas_stations',
       params: [],
     });
+
     const item = rows.item(0);
     const count = item['COUNT(*)'];
-    return count > 0 ? 'available' : 'not-available';
+
+    const stations = await this.appStorage.tryGetObject<{
+      readonly size: number;
+    }>('stations_size');
+
+    const size = stations?.size || -1;
+
+    return count === size ? 'available' : 'not-available';
   }
 
   async createGasStation(request: GasStation): Promise<GasStation> {

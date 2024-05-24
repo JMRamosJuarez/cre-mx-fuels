@@ -1,4 +1,5 @@
 import AppDbClient from '@core/domain/data_access/app_db_client';
+import AppStorage from '@core/domain/data_access/app_storage';
 import GasPriceDbModel from '@fuels/data/models/gas_price_db_model';
 import GasPricesDatasource from '@fuels/domain/datasources/gas_prices_datasource';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
@@ -9,6 +10,7 @@ import SQLite from 'react-native-sqlite-storage';
 export default class GasPricesDbDatasourceImpl implements GasPricesDatasource {
   constructor(
     private readonly mapper: GasPricesMapper,
+    private readonly appStorage: AppStorage,
     private readonly dbClient: AppDbClient<
       SQLite.SQLiteDatabase,
       SQLite.DatabaseParams,
@@ -21,9 +23,17 @@ export default class GasPricesDbDatasourceImpl implements GasPricesDatasource {
       query: 'SELECT COUNT(*) FROM prices',
       params: [],
     });
+
     const item = rows.item(0);
     const count = item['COUNT(*)'];
-    return count > 0 ? 'available' : 'not-available';
+
+    const prices = await this.appStorage.tryGetObject<{
+      readonly size: number;
+    }>('prices_size');
+
+    const size = prices?.size || -1;
+
+    return count === size ? 'available' : 'not-available';
   }
 
   async saveGasPrices(request: GasPrices): Promise<GasPrices> {
