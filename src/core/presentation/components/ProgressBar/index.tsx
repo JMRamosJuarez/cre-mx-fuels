@@ -18,7 +18,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         <View
           style={[
             styles.bar,
-            { width: `${progress}%`, backgroundColor: colors.green['500'] },
+            {
+              width: `${progress * 100}%`,
+              backgroundColor: colors.green['500'],
+            },
           ]}
         />
       </View>

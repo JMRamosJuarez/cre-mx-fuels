@@ -6,7 +6,7 @@ import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
 import GasStationsRepository from '@fuels/domain/repositories/gas_stations_repository';
-import { Observable, concatMap, from, map, scan } from 'rxjs';
+import { Observable, concatMap, from, scan } from 'rxjs';
 
 export default class GasStationsRepositoryImpl
   implements GasStationsRepository
@@ -52,10 +52,9 @@ export default class GasStationsRepositoryImpl
 
     return from(gasStations).pipe(
       concatMap(gs => from(this.dbDatasource.createGasStation(gs))),
-      map((_, index) => index),
       scan(
-        (_, curr) => {
-          const progress = Math.round(((curr + 1) / gasStations.length) * 100);
+        (_, __, index) => {
+          const progress = index / gasStations.length;
           return { type: 'stations', progress };
         },
         { type: 'stations', progress: 0 },

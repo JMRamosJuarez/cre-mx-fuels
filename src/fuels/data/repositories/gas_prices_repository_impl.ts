@@ -4,7 +4,7 @@ import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasPrices from '@fuels/domain/entities/gas_prices';
 import GasPricesRepository from '@fuels/domain/repositories/gas_prices_repository';
-import { Observable, concatMap, from, map, scan } from 'rxjs';
+import { Observable, concatMap, from, scan } from 'rxjs';
 
 export default class GasPricesRepositoryImpl implements GasPricesRepository {
   constructor(
@@ -28,12 +28,12 @@ export default class GasPricesRepositoryImpl implements GasPricesRepository {
 
   async downloadPrices(): Promise<Observable<ExecutionProcess>> {
     const prices = await this.creDatasource.getGasPrices();
+
     return from(prices).pipe(
       concatMap(price => from(this.dbDatasource.saveGasPrices(price))),
-      map((_, index) => index),
       scan(
-        (_, curr) => {
-          const progress = Math.round(((curr + 1) / prices.length) * 100);
+        (_, __, index) => {
+          const progress = index / prices.length;
           return { type: 'prices', progress };
         },
         { type: 'prices', progress: 0 },

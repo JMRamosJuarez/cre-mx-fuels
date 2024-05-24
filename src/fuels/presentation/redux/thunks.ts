@@ -4,7 +4,7 @@ import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasStationsMapRegion from '@fuels/domain/entities/gas_stations_map_region';
 import {
   updateDatasourceStatus,
-  updateDownloadProcess,
+  updateExecutionProcess,
 } from '@fuels/presentation/redux';
 
 export const validateDatasourceAsyncThunk = createAppAsyncThunk<
@@ -42,7 +42,7 @@ export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
     const data = await downloadDataUseCase.execute();
     const subscription = data.subscribe({
       next: process => {
-        dispatch(updateDownloadProcess(process));
+        dispatch(updateExecutionProcess(process));
       },
       error: () => {
         subscription.unsubscribe();

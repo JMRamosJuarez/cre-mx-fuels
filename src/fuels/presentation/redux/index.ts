@@ -23,7 +23,7 @@ const slice = createSlice({
     ) => {
       state.datasource = { type: payload };
     },
-    updateDownloadProcess: (
+    updateExecutionProcess: (
       state,
       { payload }: PayloadAction<ExecutionProcess>,
     ) => {
@@ -117,7 +117,7 @@ const slice = createSlice({
 
 export const {
   updateDatasourceStatus,
-  updateDownloadProcess,
+  updateExecutionProcess,
   updateGasStationRoute,
   updateGasStationRouteData,
   selectGasStation,
