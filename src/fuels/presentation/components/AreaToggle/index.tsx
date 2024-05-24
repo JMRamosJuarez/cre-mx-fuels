@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { styles } from '@fuels/presentation/components/AreaToggle/styles';
 import { useDisplayGasStationAreaAction } from '@fuels/presentation/redux/actions';
 import { useIsGasStationsAreaVisible } from '@fuels/presentation/redux/selectors/area';
 import { useAppTheme } from '@theme/index';
@@ -18,8 +19,8 @@ const AreaToggle: React.FC<{
       style={[
         style,
         boxShadow,
+        styles.button,
         { backgroundColor: colors.primary['50'] },
-        { padding: 8, borderRadius: 40 },
       ]}
       onPress={() => display(!visible)}>
       <MaterialIcon

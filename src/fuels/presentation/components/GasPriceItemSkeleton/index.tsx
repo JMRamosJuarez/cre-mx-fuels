@@ -16,26 +16,11 @@ const GasPriceItemSkeleton: React.FC<{
 
   return (
     <View style={style}>
-      <View
-        style={[
-          {
-            marginVertical: 0.5,
-            padding: 8,
-          },
-          { backgroundColor: dark },
-        ]}>
-        <Skeleton
-          width={80}
-          height={16}
-          style={{ alignSelf: 'center', marginVertical: 3 }}
-        />
+      <View style={[styles.title, { backgroundColor: dark }]}>
+        <Skeleton width={80} height={16} style={styles.skeleton} />
       </View>
       <View style={[styles.data, { backgroundColor: light }]}>
-        <Skeleton
-          width={80}
-          height={16}
-          style={{ alignSelf: 'center', marginVertical: 3 }}
-        />
+        <Skeleton width={80} height={16} style={styles.skeleton} />
         <Text style={[styles.priceLabel, { color: colors.primary['50'] }]}>
           {'Per liter'}
         </Text>

@@ -24,11 +24,7 @@ const GasStationItemSkeleton: React.FC<{
         { width },
         { backgroundColor: colors.primary['50'] },
       ]}>
-      <Skeleton
-        width={width - 24}
-        height={16}
-        style={{ marginVertical: 3 + 4, alignSelf: 'center' }}
-      />
+      <Skeleton width={width - 24} height={16} style={styles.skeleton} />
       <RouteDataSkeleton />
       <View style={styles.prices}>
         {prices.map((_, index) => {

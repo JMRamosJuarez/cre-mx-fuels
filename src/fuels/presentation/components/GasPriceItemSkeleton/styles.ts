@@ -10,6 +10,11 @@ export const styles = StyleSheet.create({
     padding: 8,
   },
   data: { marginVertical: 0.5, padding: 8 },
+  skeleton: { alignSelf: 'center', marginVertical: 3 },
+  title: {
+    marginVertical: 0.5,
+    padding: 8,
+  },
   price: {
     fontSize: 16,
     lineHeight: 22,

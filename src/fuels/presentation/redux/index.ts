@@ -8,6 +8,7 @@ import RouteData from '@fuels/domain/entities/route_data';
 import { initialState } from '@fuels/presentation/redux/state';
 import {
   getGasStationsMapRegionAsyncThunk,
+  getLocationAsyncThunk,
   validateDatasourceAsyncThunk,
 } from '@fuels/presentation/redux/thunks';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
@@ -65,6 +66,20 @@ const slice = createSlice({
       })
       .addCase(validateDatasourceAsyncThunk.fulfilled, (state, { payload }) => {
         state.datasource = { type: payload };
+      });
+
+    builder
+      .addCase(getLocationAsyncThunk.pending, state => {
+        state.location = { type: 'loading' };
+      })
+      .addCase(getLocationAsyncThunk.rejected, (state, { payload }) => {
+        state.location = {
+          type: 'error',
+          error: payload || new AppError(AppErrorType.UNKNOWN_ERROR),
+        };
+      })
+      .addCase(getLocationAsyncThunk.fulfilled, (state, { payload }) => {
+        state.location = { type: 'success', data: payload };
       });
 
     builder

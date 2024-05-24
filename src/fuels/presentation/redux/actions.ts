@@ -36,7 +36,7 @@ export const useDownloadDataAction = () => {
 export const useGetGasStationsMapRegionAction = () => {
   const dispatch = useAppDispatch();
   return useCallback(
-    async (request: number) => {
+    async (request?: number) => {
       const response = await dispatch(
         getGasStationsMapRegionAsyncThunk(request),
       );

@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginVertical: 4,
   },
+  skeleton: { marginVertical: 3 + 4, alignSelf: 'center' },
   prices: { flexDirection: 'row', alignItems: 'center' },
   price: { flex: 1, marginHorizontal: 1 },
   about: {

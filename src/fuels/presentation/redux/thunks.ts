@@ -1,3 +1,4 @@
+import Location from '@core/domain/entities/location';
 import { createAppAsyncThunk } from '@core/presentation/redux/thunks';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasStationsMapRegion from '@fuels/domain/entities/gas_stations_map_region';
@@ -54,14 +55,22 @@ export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
   },
 );
 
+export const getLocationAsyncThunk = createAppAsyncThunk<undefined, Location>(
+  '/get-location',
+  async (_, { extra: { geolocator } }) => {
+    return await geolocator.getLocation();
+  },
+);
+
 export const getGasStationsMapRegionAsyncThunk = createAppAsyncThunk<
-  number,
+  number | undefined,
   GasStationsMapRegion
 >(
   '/get-gas-stations-map-region',
   async (
-    distance,
+    request,
     {
+      getState,
       extra: {
         geolocator,
         coreComponent: {
@@ -70,6 +79,7 @@ export const getGasStationsMapRegionAsyncThunk = createAppAsyncThunk<
       },
     },
   ) => {
+    const distance = request || getState().gasStationsReducer.area.radius;
     const origin = await geolocator.getLocation();
     const stations = await getGasStationsUseCase.execute({
       distance,

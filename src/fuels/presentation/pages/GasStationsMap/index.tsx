@@ -57,7 +57,7 @@ const GasStationsMap: React.FC = () => {
   );
 
   useEffect(() => {
-    // updateRegion(2500);
+    updateRegion(2500);
   }, [updateRegion]);
 
   const updateRoute = useUpdateGasStationRouteAction();
@@ -114,18 +114,15 @@ const GasStationsMap: React.FC = () => {
         <GasStationsArea />
         <GasStationMapRoute />
       </MapView>
-      <AreaToggle
-        style={{
-          position: 'absolute',
-          end: 24 + 48,
-          bottom: MAP_PADDING_BOTTOM + ITEM_MARGIN,
-        }}
-      />
+      <AreaToggle style={styles.areaToggle} />
       <LocationButton
-        style={{
-          position: 'absolute',
-          end: 24,
-          bottom: MAP_PADDING_BOTTOM + ITEM_MARGIN,
+        style={styles.locationButton}
+        onLocation={origin => {
+          mapRef.current?.animateToRegion({
+            ...origin,
+            latitudeDelta: 0.009,
+            longitudeDelta: 0.009,
+          });
         }}
       />
       <RegionSelector
