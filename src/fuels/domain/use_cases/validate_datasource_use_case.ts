@@ -13,11 +13,7 @@ export default class ValidateDatasourceUseCase
 
   async execute(_: void): Promise<DatasourceStatus> {
     try {
-      const stations = await this.stationsRepository.validateDatasource();
-      const prices = await this.pricesRepository.validateDatasource();
-      return stations === 'available' && prices === 'available'
-        ? 'available'
-        : 'not-available';
+      return await this.stationsRepository.validateDatasource();
     } catch (__) {
       return 'not-available';
     }

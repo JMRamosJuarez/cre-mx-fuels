@@ -2,21 +2,26 @@ import { useCallback } from 'react';
 
 import { useAppDispatch } from '@core/presentation/redux';
 import { BaseState } from '@core/presentation/redux/state';
+import DatasourceStatus from '@fuels/domain/entities/datasource_status';
+import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationMapRoute from '@fuels/domain/entities/gas_station_map_route';
 import RouteData from '@fuels/domain/entities/route_data';
 import {
   displayGasStationsArea,
   selectGasStation,
+  updateDatasourceStatus,
+  updateExecutionProcess,
   updateGasStationRoute,
   updateGasStationRouteData,
 } from '@fuels/presentation/redux';
 import {
-  downloadDataAsyncThunk,
+  getExecutionProcessAsyncThunk,
   getGasStationsMapRegionAsyncThunk,
   validateDatasourceAsyncThunk,
 } from '@fuels/presentation/redux/thunks';
 import { unwrapResult } from '@reduxjs/toolkit';
+import { Subscription } from 'rxjs';
 
 export const useValidateDatasourceAction = () => {
   const dispatch = useAppDispatch();
@@ -26,11 +31,64 @@ export const useValidateDatasourceAction = () => {
   }, [dispatch]);
 };
 
-export const useDownloadDataAction = () => {
+export const useUpdateDatasourceStatusAction = () => {
   const dispatch = useAppDispatch();
-  return useCallback(() => {
-    dispatch(downloadDataAsyncThunk());
+  return useCallback(
+    (request: DatasourceStatus) => {
+      dispatch(updateDatasourceStatus(request));
+    },
+    [dispatch],
+  );
+};
+
+export const useUpdateExecutionProcessAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(
+    (request: ExecutionProcess) => {
+      dispatch(updateExecutionProcess(request));
+    },
+    [dispatch],
+  );
+};
+
+export const useGetExecutionProcessAction = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(async () => {
+    const response = await dispatch(getExecutionProcessAsyncThunk());
+    return unwrapResult(response);
   }, [dispatch]);
+};
+
+export const useDownloadDataAction = () => {
+  const getProcess = useGetExecutionProcessAction();
+
+  const updateProcess = useUpdateExecutionProcessAction();
+
+  const updateStatus = useUpdateDatasourceStatusAction();
+
+  return useCallback(() => {
+    let subscription: Subscription;
+
+    const init = async () => {
+      try {
+        const observable = await getProcess();
+        subscription = observable.subscribe({
+          next: process => {
+            updateProcess(process);
+          },
+          complete: () => {
+            updateStatus('available');
+          },
+        });
+      } catch (error) {}
+    };
+
+    init();
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [getProcess, updateProcess, updateStatus]);
 };
 
 export const useGetGasStationsMapRegionAction = () => {

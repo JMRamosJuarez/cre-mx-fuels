@@ -12,9 +12,7 @@ import { Text, View } from 'react-native';
 const ProcessingData: React.FC = () => {
   const downloadData = useDownloadDataAction();
 
-  useEffect(() => {
-    downloadData();
-  }, [downloadData]);
+  useEffect(downloadData, [downloadData]);
 
   const { colors } = useAppTheme();
 

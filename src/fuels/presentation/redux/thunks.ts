@@ -1,11 +1,9 @@
 import Location from '@core/domain/entities/location';
 import { createAppAsyncThunk } from '@core/presentation/redux/thunks';
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
+import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStationsMapRegion from '@fuels/domain/entities/gas_stations_map_region';
-import {
-  updateDatasourceStatus,
-  updateExecutionProcess,
-} from '@fuels/presentation/redux';
+import { Observable } from 'rxjs';
 
 export const validateDatasourceAsyncThunk = createAppAsyncThunk<
   void,
@@ -26,12 +24,14 @@ export const validateDatasourceAsyncThunk = createAppAsyncThunk<
   },
 );
 
-export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
-  '/download_data',
+export const getExecutionProcessAsyncThunk = createAppAsyncThunk<
+  void,
+  Observable<ExecutionProcess>
+>(
+  '/get-execution-process',
   async (
     _,
     {
-      dispatch,
       extra: {
         coreComponent: {
           gasStationsComponent: { downloadDataUseCase },
@@ -39,19 +39,7 @@ export const downloadDataAsyncThunk = createAppAsyncThunk<void, void>(
       },
     },
   ) => {
-    const data = await downloadDataUseCase.execute();
-    const subscription = data.subscribe({
-      next: process => {
-        dispatch(updateExecutionProcess(process));
-      },
-      error: () => {
-        subscription.unsubscribe();
-      },
-      complete: () => {
-        dispatch(updateDatasourceStatus('available'));
-        subscription.unsubscribe();
-      },
-    });
+    return await downloadDataUseCase.execute();
   },
 );
 
