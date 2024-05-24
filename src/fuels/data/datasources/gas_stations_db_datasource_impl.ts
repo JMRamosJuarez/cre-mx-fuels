@@ -8,6 +8,7 @@ import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationRequest from '@fuels/domain/entities/gas_station_request';
 import GasStationsRequest from '@fuels/domain/entities/gas_stations_request';
 import GasStationsMapper from '@fuels/domain/mappers/gas_stations_mapper';
+import dayjs from 'dayjs';
 import SQLite from 'react-native-sqlite-storage';
 
 export default class GasStationsDbDatasourceImpl
@@ -32,13 +33,19 @@ export default class GasStationsDbDatasourceImpl
     const item = rows.item(0);
     const count = item['COUNT(*)'];
 
-    const stations = await this.appStorage.tryGetObject<{
+    const datasource = await this.appStorage.tryGetObject<{
+      readonly created_at: number;
       readonly size: number;
-    }>('stations_size');
+    }>('stations_datasource');
 
-    const size = stations?.size || -1;
+    const createdAt = dayjs(datasource?.created_at || new Date().getTime());
+    const current = dayjs();
 
-    return count === size ? 'available' : 'not-available';
+    const diff = current.diff(createdAt, 'days');
+
+    const size = datasource?.size || -1;
+
+    return diff < 7 && count === size ? 'available' : 'not-available';
   }
 
   async createGasStation(request: GasStation): Promise<GasStation> {

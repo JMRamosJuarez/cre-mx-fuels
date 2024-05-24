@@ -7,6 +7,7 @@ import { styles } from '@fuels/presentation/components/Gasstations/Error/styles'
 import GasStationsProps from '@fuels/presentation/components/GasStations/props';
 import { useGasStationsMapRegionError } from '@fuels/presentation/redux/selectors/gas_stations_map_region';
 import { useAppTheme } from '@theme/index';
+import { useTranslation } from 'react-i18next';
 import {
   AppState,
   AppStateStatus,
@@ -20,6 +21,9 @@ import {
 } from 'react-native-permissions';
 
 const GasStationsError: React.FC<GasStationsProps> = ({ updateRegion }) => {
+  const { t } = useTranslation();
+  const errors = useTranslation('errors');
+
   const { boxShadow, colors } = useAppTheme();
 
   const {
@@ -66,16 +70,14 @@ const GasStationsError: React.FC<GasStationsProps> = ({ updateRegion }) => {
             { backgroundColor: colors.primary['50'] },
           ]}>
           <Text style={styles.message}>
-            {
-              'In order to show you the nearest\ngas stations we need access to\nyour current location.'
-            }
+            {errors.t('location_permissions_error')}
           </Text>
           <TouchableOpacity
             activeOpacity={0.7}
             style={[styles.button, { backgroundColor: colors.blue['700'] }]}
             onPress={openSettings}>
             <Text style={[styles.buttonLabel, { color: colors.primary['50'] }]}>
-              {'Open settings'}
+              {t('open_settings')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -89,9 +91,7 @@ const GasStationsError: React.FC<GasStationsProps> = ({ updateRegion }) => {
             { width: ITEM_WIDTH },
             { backgroundColor: colors.primary['50'] },
           ]}>
-          <Text style={styles.message}>
-            {'An unexpected error occurred\nplease try again.'}
-          </Text>
+          <Text style={styles.message}>{errors.t('unexpected_error')}</Text>
         </View>
       );
   }

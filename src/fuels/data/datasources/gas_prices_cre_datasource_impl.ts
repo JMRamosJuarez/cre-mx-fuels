@@ -48,8 +48,9 @@ export default class GasPricesCreDatasourceImpl implements GasPricesDatasource {
     );
 
     await this.appStorage.saveObject<{
+      readonly created_at: number;
       readonly size: number;
-    }>('prices_size', { size });
+    }>('prices_datasource', { created_at: new Date().getTime(), size });
 
     return prices;
   }

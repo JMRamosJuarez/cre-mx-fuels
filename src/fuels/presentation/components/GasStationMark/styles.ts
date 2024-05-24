@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   container: {
     padding: 8,
     borderRadius: 4,
-    borderWidth: 1,
+    borderWidth: 0.5,
   },
   price: {
     textAlign: 'center',

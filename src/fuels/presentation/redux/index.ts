@@ -1,11 +1,10 @@
 import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import { BaseState } from '@core/presentation/redux/state';
-import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationMapRoute from '@fuels/domain/entities/gas_station_map_route';
 import RouteData from '@fuels/domain/entities/route_data';
-import { initialState } from '@fuels/presentation/redux/state';
+import { DatasourceState, initialState } from '@fuels/presentation/redux/state';
 import {
   getGasStationsMapRegionAsyncThunk,
   getLocationAsyncThunk,
@@ -19,9 +18,9 @@ const slice = createSlice({
   reducers: {
     updateDatasourceStatus: (
       state,
-      { payload }: PayloadAction<DatasourceStatus>,
+      { payload }: PayloadAction<DatasourceState>,
     ) => {
-      state.datasource = { type: payload };
+      state.datasource = payload;
     },
     updateExecutionProcess: (
       state,

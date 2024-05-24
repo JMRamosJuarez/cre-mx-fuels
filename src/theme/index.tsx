@@ -21,7 +21,7 @@ export const AppThemeProvider: React.FC<PropsWithChildren> = ({ children }) => (
   <AppThemeContext.Provider value={theme}>
     <StatusBar
       translucent
-      barStyle={'light-content'}
+      barStyle={'dark-content'}
       backgroundColor={'transparent'}
     />
     <SafeAreaProvider>{children}</SafeAreaProvider>

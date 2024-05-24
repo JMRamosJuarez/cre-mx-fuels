@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
+import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import { useAppDispatch } from '@core/presentation/redux';
 import { BaseState } from '@core/presentation/redux/state';
-import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import ExecutionProcess from '@fuels/domain/entities/execution_process';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasStationMapRoute from '@fuels/domain/entities/gas_station_map_route';
@@ -15,6 +15,7 @@ import {
   updateGasStationRoute,
   updateGasStationRouteData,
 } from '@fuels/presentation/redux';
+import { DatasourceState } from '@fuels/presentation/redux/state';
 import {
   getExecutionProcessAsyncThunk,
   getGasStationsMapRegionAsyncThunk,
@@ -34,7 +35,7 @@ export const useValidateDatasourceAction = () => {
 export const useUpdateDatasourceStatusAction = () => {
   const dispatch = useAppDispatch();
   return useCallback(
-    (request: DatasourceStatus) => {
+    (request: DatasourceState) => {
       dispatch(updateDatasourceStatus(request));
     },
     [dispatch],
@@ -77,10 +78,18 @@ export const useDownloadDataAction = () => {
             updateProcess(process);
           },
           complete: () => {
-            updateStatus('available');
+            updateStatus({ type: 'available' });
           },
         });
-      } catch (error) {}
+      } catch (error) {
+        updateStatus({
+          type: 'error',
+          error: new AppError(
+            AppErrorType.UNKNOWN_ERROR,
+            JSON.stringify(error),
+          ),
+        });
+      }
     };
 
     init();

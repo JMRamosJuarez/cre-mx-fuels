@@ -9,4 +9,6 @@ export default {
     'Información proporcionada por la\nCRE (COMISIÓN REGULADORA DE ENERGÍA).\nPara saber más ingresa a <underline>{{url}}</underline>',
   show_route: 'Mostrar ruta',
   go: 'Ir',
+  reload: 'Recargar',
+  open_settings: 'Abrir configuración',
 };

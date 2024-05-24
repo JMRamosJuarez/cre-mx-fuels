@@ -46,8 +46,12 @@ export default class GasStationsCreDatasourceImpl
     const stations = models.map(m => this.mapper.mapMapXmlModel(m));
 
     await this.appStorage.saveObject<{
+      readonly created_at: number;
       readonly size: number;
-    }>('stations_size', { size: stations.length });
+    }>('stations_datasource', {
+      created_at: new Date().getTime(),
+      size: stations.length,
+    });
 
     return stations;
   }

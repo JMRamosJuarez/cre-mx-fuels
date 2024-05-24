@@ -5,6 +5,7 @@ import GasPricesDatasource from '@fuels/domain/datasources/gas_prices_datasource
 import DatasourceStatus from '@fuels/domain/entities/datasource_status';
 import GasPrices from '@fuels/domain/entities/gas_prices';
 import GasPricesMapper from '@fuels/domain/mappers/gas_prices_mapper';
+import dayjs from 'dayjs';
 import SQLite from 'react-native-sqlite-storage';
 
 export default class GasPricesDbDatasourceImpl implements GasPricesDatasource {
@@ -27,13 +28,19 @@ export default class GasPricesDbDatasourceImpl implements GasPricesDatasource {
     const item = rows.item(0);
     const count = item['COUNT(*)'];
 
-    const prices = await this.appStorage.tryGetObject<{
+    const datasource = await this.appStorage.tryGetObject<{
+      readonly created_at: number;
       readonly size: number;
-    }>('prices_size');
+    }>('prices_datasource');
 
-    const size = prices?.size || -1;
+    const createdAt = dayjs(datasource?.created_at || new Date().getTime());
+    const current = dayjs();
 
-    return count === size ? 'available' : 'not-available';
+    const diff = current.diff(createdAt, 'days');
+
+    const size = datasource?.size || -1;
+
+    return diff < 7 && count === size ? 'available' : 'not-available';
   }
 
   async saveGasPrices(request: GasPrices): Promise<GasPrices> {

@@ -23,7 +23,7 @@ import {
   useUpdateGasStationRouteAction,
 } from '@fuels/presentation/redux/actions';
 import { useAppTheme } from '@theme/index';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StatusBar, StyleSheet } from 'react-native';
 import MapView from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -84,6 +84,11 @@ const GasStationsMap: React.FC = () => {
 
   return (
     <>
+      <StatusBar
+        translucent
+        barStyle={'light-content'}
+        backgroundColor={'transparent'}
+      />
       <MapView
         ref={mapRef}
         style={StyleSheet.absoluteFill}
