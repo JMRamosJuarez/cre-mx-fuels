@@ -11,7 +11,7 @@ const PricesProgressBar: React.FC = () => {
     <ProgressBar
       style={styles.container}
       title={p =>
-        `Processing prices: ${numbro(p * 100).formatCurrency({
+        `Processing prices: ${numbro(p * 100).format({
           mantissa: 2,
           trimMantissa: false,
         })}%`
