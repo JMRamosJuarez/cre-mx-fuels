@@ -6,6 +6,10 @@ Also shows distance and shortest route
 
 ![route](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/0444b5fc-6f02-4716-bf5b-837c8c1e35ed) ![navigation](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/1ea04944-b121-4ca1-aaf6-fdc5abf7f1c1)
 
+Support for English and Spanish, based on your device language.
+
+![english](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/2c6ba68b-ed17-4732-9fce-3733ef8cf393) ![spanish](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/bcc6f4ee-bd4c-4f9f-b62b-50f586762da2)
+
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
