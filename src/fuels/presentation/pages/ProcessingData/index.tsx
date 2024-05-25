@@ -7,9 +7,12 @@ import { styles } from '@fuels/presentation/pages/ProcessingData/styles';
 import { useDownloadDataAction } from '@fuels/presentation/redux/actions';
 import { useAppTheme } from '@theme/index';
 import LottieView from 'lottie-react-native';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 const ProcessingData: React.FC = () => {
+  const { t } = useTranslation();
+
   const downloadData = useDownloadDataAction();
 
   useEffect(downloadData, [downloadData]);
@@ -27,11 +30,7 @@ const ProcessingData: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.primary['50'] }]}>
-      <Text style={styles.title}>
-        {
-          'We are processing a lot of data please wait.\nMeanwhile you can put the app in background\nand take a coffe.'
-        }
-      </Text>
+      <Text style={styles.title}>{t('processing_data_message')}</Text>
       <LottieView
         style={[
           styles.animation,

@@ -1,4 +1,8 @@
 export default {
+  processing_data_message:
+    'We are processing a lot of data, please wait. Meanwhile you can put the app in background and take a coffe.',
+  processing_gas_stations: 'Processing gas stations {{value}}%',
+  processing_prices: 'Processing prices {{value}}%',
   area_of: 'Area of {{value}} Km.',
   distance: 'Distance',
   distance_value: '{{value}} Km.',

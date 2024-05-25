@@ -1,4 +1,8 @@
 export default {
+  processing_data_message:
+    'Estamos procesando mucha información, por favor espera. Mientras tanto puedes poner la aplicación en segundo plano y tomar un café.',
+  processing_gas_stations: 'Procesando gasolineras {{value}}%',
+  processing_prices: 'Procesando precios {{value}}%',
   area_of: 'Área de {{value}} Km.',
   distance: 'Distancia',
   distance_value: '{{value}} Km.',
