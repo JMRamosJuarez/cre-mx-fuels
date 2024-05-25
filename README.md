@@ -4,7 +4,8 @@ This app use public data provided by the [CRE](https://www.gob.mx/cre) (COMISIÓ
 
 Also shows distance and shortest route
 
-![route](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/0444b5fc-6f02-4716-bf5b-837c8c1e35ed)
+![route](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/0444b5fc-6f02-4716-bf5b-837c8c1e35ed) ![navigation](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/1ea04944-b121-4ca1-aaf6-fdc5abf7f1c1)
+
 
 # Getting Started
 
