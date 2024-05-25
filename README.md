@@ -6,7 +6,6 @@ Also shows distance and shortest route
 
 ![route](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/0444b5fc-6f02-4716-bf5b-837c8c1e35ed) ![navigation](https://github.com/JMRamosJuarez/cre-mx-fuels/assets/19629268/1ea04944-b121-4ca1-aaf6-fdc5abf7f1c1)
 
-
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
@@ -44,3 +43,7 @@ yarn android
 ```
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ shortly provided you have set up your emulator/simulator correctly.
 
+### TODO
+- iOS configuration.
+- Change the default 10km area
+- Manual data update
