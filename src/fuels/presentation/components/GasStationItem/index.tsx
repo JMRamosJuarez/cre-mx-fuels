@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Location from '@core/domain/entities/location';
 import GasStation from '@fuels/domain/entities/gas_station';
 import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
 import { styles } from '@fuels/presentation/components/GasStationItem/styles';
@@ -12,9 +13,10 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const GasStationItem: React.FC<{
   readonly width: number;
+  readonly origin: Location;
   readonly station: GasStation;
   readonly displayRoute: (station: GasStation) => void;
-}> = ({ width, station, displayRoute }) => {
+}> = ({ width, origin, station, displayRoute }) => {
   const { t } = useTranslation();
 
   const { boxShadow, colors } = useAppTheme();
@@ -90,7 +92,10 @@ const GasStationItem: React.FC<{
             styles.outlineButton,
             { borderColor: colors.blue['700'] },
           ]}
-          onPress={() => {}}>
+          onPress={() => {
+            const url = `https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=driving&origin=${origin.latitude},${origin.longitude}&destination=${station.location.latitude},${station.location.longitude}`;
+            Linking.openURL(url);
+          }}>
           <MaterialIcon
             color={colors.blue['700']}
             size={24}

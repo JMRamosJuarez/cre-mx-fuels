@@ -36,6 +36,7 @@ const GasStationsList = forwardRef<FlatList, GasStationsProps>(
           return (
             <GasStationItem
               width={ITEM_WIDTH}
+              origin={origin}
               station={item}
               displayRoute={station => {
                 displayRoute({ index, origin, station });
