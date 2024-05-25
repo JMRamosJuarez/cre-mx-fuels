@@ -43,6 +43,14 @@ yarn android
 ```
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ shortly provided you have set up your emulator/simulator correctly.
 
+### Technology stack
+- [react-redux](https://github.com/reduxjs/react-redux) and [@reduxjs/toolkit](https://github.com/reduxjs/redux-toolkit) for the state managment.
+- [react-native-maps](https://github.com/react-native-maps/react-native-maps) to display the map.
+- [react-native-maps-directions](https://github.com/bramus/react-native-maps-directions) to handle routes data.
+- [react-native-geolocation-service](https://github.com/Agontuk/react-native-geolocation-service) to get the user location.
+- [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) as local database.
+- [i18next](https://github.com/i18next/i18next), [react-i18next](https://github.com/i18next/react-i18next) and [react-native-localize](https://github.com/zoontek/react-native-localize) for localization.
+
 ### TODO
 - iOS configuration.
 - Change the default price in the map markers
