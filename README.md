@@ -45,5 +45,6 @@ If everything is set up _correctly_, you should see your new app running in your
 
 ### TODO
 - iOS configuration.
+- Change the default price in the map markers
 - Change the default 10km area
 - Manual data update
