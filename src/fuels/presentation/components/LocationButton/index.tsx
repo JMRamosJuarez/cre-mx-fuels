@@ -4,6 +4,7 @@ import Location from '@core/domain/entities/location';
 import { styles } from '@fuels/presentation/components/LocationButton/styles';
 import { useGetGasStationsMapRegionAction } from '@fuels/presentation/redux/actions';
 import { useGasStationsMapRegionState } from '@fuels/presentation/redux/selectors/gas_stations_map_region';
+import MaterialIcon from '@react-native-vector-icons/material-design-icons';
 import { useAppTheme } from '@theme/index';
 import {
   ActivityIndicator,
@@ -11,7 +12,6 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const LocationButton: React.FC<{
   readonly style?: StyleProp<ViewStyle>;

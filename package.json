@@ -5,12 +5,15 @@
   "scripts": {
     "android-dev": "react-native run-android --mode developDebug --appIdSuffix dev",
     "android-production": "react-native run-android --mode productionDebug",
-    "ios": "react-native run-ios",
+    "ios-dev": "react-native run-ios --scheme Develop",
+    "ios-prod": "react-native run-ios --scheme Production",
     "lint": "eslint ./src",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-vector-icons/common": "^11.0.0",
+    "@react-native-vector-icons/material-design-icons": "^7.4.47",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.0",
     "@reduxjs/toolkit": "^2.5.0",
@@ -37,7 +40,6 @@
     "react-native-screens": "^4.3.0",
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-svg": "^15.10.1",
-    "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.2.0",
     "rxjs": "^7.8.1"
   },

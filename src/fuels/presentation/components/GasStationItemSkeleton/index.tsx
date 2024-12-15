@@ -4,11 +4,11 @@ import Skeleton from '@core/presentation/components/Skeleton';
 import GasPriceItemSkeleton from '@fuels/presentation/components/GasPriceItemSkeleton';
 import { styles } from '@fuels/presentation/components/GasStationItemSkeleton/styles';
 import RouteDataSkeleton from '@fuels/presentation/components/GasStationRouteData/skeleton';
+import MaterialIcon from '@react-native-vector-icons/material-design-icons';
 import { useAppTheme } from '@theme/index';
 import { Trans, useTranslation } from 'react-i18next';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Config } from 'react-native-config';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const GasStationItemSkeleton: React.FC<{
   readonly width: number;

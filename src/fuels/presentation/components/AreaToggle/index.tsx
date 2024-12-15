@@ -3,9 +3,9 @@ import React from 'react';
 import { styles } from '@fuels/presentation/components/AreaToggle/styles';
 import { useDisplayGasStationAreaAction } from '@fuels/presentation/redux/actions';
 import { useIsGasStationsAreaVisible } from '@fuels/presentation/redux/selectors/area';
+import MaterialIcon from '@react-native-vector-icons/material-design-icons';
 import { useAppTheme } from '@theme/index';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const AreaToggle: React.FC<{
   readonly style?: StyleProp<ViewStyle>;

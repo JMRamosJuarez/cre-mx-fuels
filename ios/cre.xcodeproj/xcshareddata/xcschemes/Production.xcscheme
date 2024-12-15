@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1210"
-   version = "1.3">
+   LastUpgradeVersion = "1610"
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "cre.app"
-               BlueprintName = "cre"
+               BlueprintIdentifier = "1F2E99912D0E7E9200E23F87"
+               BuildableName = "Production.app"
+               BlueprintName = "Production"
                ReferencedContainer = "container:cre.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,19 +27,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "creTests.xctest"
-               BlueprintName = "creTests"
-               ReferencedContainer = "container:cre.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -54,9 +44,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "cre.app"
-            BlueprintName = "cre"
+            BlueprintIdentifier = "1F2E99912D0E7E9200E23F87"
+            BuildableName = "Production.app"
+            BlueprintName = "Production"
             ReferencedContainer = "container:cre.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,9 +61,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "cre.app"
-            BlueprintName = "cre"
+            BlueprintIdentifier = "1F2E99912D0E7E9200E23F87"
+            BuildableName = "Production.app"
+            BlueprintName = "Production"
             ReferencedContainer = "container:cre.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -5,11 +5,11 @@ import GasStation from '@fuels/domain/entities/gas_station';
 import GasPriceItem from '@fuels/presentation/components/GasPriceItem';
 import { styles } from '@fuels/presentation/components/GasStationItem/styles';
 import GasStationRouteData from '@fuels/presentation/components/GasStationRouteData';
+import MaterialIcon from '@react-native-vector-icons/material-design-icons';
 import { useAppTheme } from '@theme/index';
 import { Trans, useTranslation } from 'react-i18next';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Config } from 'react-native-config';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const GasStationItem: React.FC<{
   readonly width: number;
