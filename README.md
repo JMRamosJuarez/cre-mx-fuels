@@ -85,7 +85,9 @@ yarn ios-dev
 yarn ios-production
 ```
 
-If everything is set up _correctly_, you should see the app running in your _Android Emulator_ shortly provided you have set up your emulator/simulator correctly.
+If everything is set up _correctly_, you should see the app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+
+This is one way to run the app — you can also run it directly from within Android Studio and Xcode respectively.
 
 ### Technology stack
 
