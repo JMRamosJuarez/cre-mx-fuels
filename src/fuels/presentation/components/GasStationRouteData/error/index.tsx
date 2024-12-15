@@ -16,7 +16,7 @@ const RouteDataError: React.FC = () => {
       </View>
       <View style={styles.item}>
         <Text style={styles.title}>
-          {t('trave_duration_value', { value: '--.--' })}
+          {t('travel_duration_value', { value: '--.--' })}
         </Text>
         <Text style={styles.subtitle}>{t('travel_duration')}</Text>
       </View>
