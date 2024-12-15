@@ -12,7 +12,9 @@ const AppNavigator: React.FC = () => {
     <NavigationContainer
       onReady={async () => {
         await validateDatasource();
-        hide({ fade: true });
+        //We can do some validations before hidding the splash screen
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        await hide({ fade: true });
       }}>
       <AppNavigationStack.Navigator
         initialRouteName={'Main'}
