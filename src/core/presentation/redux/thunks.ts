@@ -1,12 +1,19 @@
 import AppError, { AppErrorType } from '@core/domain/entities/app_error';
 import { instanceOfAppError } from '@core/domain/errors';
-import { AppAsyncThunkConfig, AppThunkApi } from '@core/presentation/redux';
-import { AsyncThunkOptions, createAsyncThunk } from '@reduxjs/toolkit';
+import { AppAsyncThunkConfig } from '@core/presentation/redux';
+import {
+  AsyncThunkOptions,
+  createAsyncThunk,
+  GetThunkAPI,
+} from '@reduxjs/toolkit';
 
 export const createAppAsyncThunk = <Request, Response>(
   prefix: string,
-  thunk: (request: Request, api: AppThunkApi) => Promise<Response>,
-  options?: AsyncThunkOptions<Request, AppThunkApi>,
+  thunk: (
+    request: Request,
+    api: GetThunkAPI<AppAsyncThunkConfig>,
+  ) => Promise<Response>,
+  options?: AsyncThunkOptions<Request, GetThunkAPI<AppAsyncThunkConfig>>,
 ) =>
   createAsyncThunk<Response, Request, AppAsyncThunkConfig>(
     prefix,

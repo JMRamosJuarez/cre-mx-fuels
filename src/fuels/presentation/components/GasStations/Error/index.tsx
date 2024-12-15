@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { LocationPermissions } from '@core/domain/data_access/permissions';
 import { AppErrorType } from '@core/domain/entities/app_error';
 import { useDimensions } from '@core/presentation/hooks';
-import { styles } from '@fuels/presentation/components/Gasstations/Error/styles';
+import { styles } from '@fuels/presentation/components/GasStations/Error/styles';
 import GasStationsProps from '@fuels/presentation/components/GasStations/props';
 import { useGasStationsMapRegionError } from '@fuels/presentation/redux/selectors/gas_stations_map_region';
 import { useAppTheme } from '@theme/index';
@@ -75,7 +75,7 @@ const GasStationsError: React.FC<GasStationsProps> = ({ updateRegion }) => {
           <TouchableOpacity
             activeOpacity={0.7}
             style={[styles.button, { backgroundColor: colors.blue['700'] }]}
-            onPress={openSettings}>
+            onPress={() => openSettings()}>
             <Text style={[styles.buttonLabel, { color: colors.primary['50'] }]}>
               {t('open_settings')}
             </Text>

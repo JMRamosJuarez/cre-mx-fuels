@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { useDimensions } from '@core/presentation/hooks';
-import { styles } from '@fuels/presentation/components/Gasstations/Empty/styles';
+import { styles } from '@fuels/presentation/components/GasStations/Empty/styles';
 import { useAppTheme } from '@theme/index';
 import { Text, View } from 'react-native';
 
