@@ -12,26 +12,34 @@ Support for English and Spanish, based on your device language.
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Generate a Google Maps API Key
 
 Learn how to generate your own API Key [here](https://developers.google.com/maps/documentation/javascript/get-api-key)
 
-## Step 2: Create a .env.dev file
+## Step 2: Create the .env files
 
-First, you will need to create a ".env.dev" file and add this variables:
+Create the production .env file
 
 ```
 CRE_URL=https://datos.gob.mx/busca/dataset/estaciones-de-servicio-gasolineras-y-precios-finales-de-gasolina-y-diesel
 CRE_DATA_BASE_URL=https://publicacionexterna.azurewebsites.net
-GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
+GOOGLE_MAPS_API_KEY=${YOUR_PRODUCTION_GOOGLE_MAPS_API_KEY}
+```
+
+Create the develop .env.dev file
+
+```
+CRE_URL=https://datos.gob.mx/busca/dataset/estaciones-de-servicio-gasolineras-y-precios-finales-de-gasolina-y-diesel
+CRE_DATA_BASE_URL=https://publicacionexterna.azurewebsites.net
+GOOGLE_MAPS_API_KEY=${YOUR_DEVELOP_GOOGLE_MAPS_API_KEY}
 ```
 
 To start Metro, run the following command from the _root_ of your React Native project:
 
 ```bash
-# OR using Yarn
+# Using Yarn
 yarn start
 ```
 
@@ -39,15 +47,48 @@ yarn start
 
 Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ app:
 
-### For Android
+## For Android
 
 ```bash
-# OR using Yarn
-yarn android
+# Using Yarn
+yarn android-{{flavor}}
 ```
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ shortly provided you have set up your emulator/simulator correctly.
+
+### Android Develop
+
+```bash
+yarn android-dev
+```
+
+### Android Production
+
+```bash
+yarn android-production
+```
+
+## For iOS
+
+```bash
+# Using Yarn
+yarn ios-{{flavor}}
+```
+
+### iOS Develop
+
+```bash
+yarn ios-dev
+```
+
+### iOS Production
+
+```bash
+yarn ios-production
+```
+
+If everything is set up _correctly_, you should see the app running in your _Android Emulator_ shortly provided you have set up your emulator/simulator correctly.
 
 ### Technology stack
+
 - [react-redux](https://github.com/reduxjs/react-redux) and [@reduxjs/toolkit](https://github.com/reduxjs/redux-toolkit) for the state managment.
 - [react-native-maps](https://github.com/react-native-maps/react-native-maps) to display the map.
 - [react-native-maps-directions](https://github.com/bramus/react-native-maps-directions) to handle routes data.
@@ -56,7 +97,7 @@ If everything is set up _correctly_, you should see your new app running in your
 - [i18next](https://github.com/i18next/i18next), [react-i18next](https://github.com/i18next/react-i18next) and [react-native-localize](https://github.com/zoontek/react-native-localize) for localization.
 
 ### TODO
-- iOS configuration.
+
 - Change the default price in the map markers
 - Change the default 10km area
 - Manual data update
